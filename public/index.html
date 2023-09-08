@@ -1,0 +1,2783 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>EPrise</title>
+    <script type="text/javascript" src="qrcode.min.js"></script>
+    <script type="text/javascript" src="qrious.js"></script>
+</head>
+
+<body>
+
+    <link rel="stylesheet" href="style.css">
+    <!-- -----------------------------script------------------------------------------------->
+
+    <script>
+        var page_count = 0;
+        var page_count1 = 0;
+
+        var product_columns = "";
+        var hsncolumns = "";
+        var heading = "";
+        var be_details = "";
+        var bill_to = "";
+        var ship_to = "";
+        var master_details = "";
+        var attr_border = "";
+        var inv_att = "";
+        var items = "";
+        var tax_details = "";
+        var tax_details_total = "";
+        var design = "";
+        var tax_split_up_total = "";
+        var footer = "";
+        var others = "";
+        var config = "";
+
+        function topdiv() {
+            page = document.createElement("page");
+            page.className = 'page';
+
+            Top_elements = document.createElement('div');
+            Top_elements.className = 'Top';
+            Top_elements.id = 'Top_elements';
+            // Top_elements.style.paddingTop = '8%';
+            let searchParams = new URLSearchParams(window.location.search)
+            var message = searchParams.get('message')
+            // Decode the String
+            var decodedString = atob(message);
+
+            const myArray = JSON.parse(decodedString);
+
+            product_columns = myArray.product_columns;
+            hsncolumns = myArray.hsncolumns;
+            heading = myArray.heading;
+            be_details = myArray.be_details;
+            bill_to = myArray.bill_to;
+            ship_to = myArray.ship_to;
+            master_details = myArray.master_details;
+            attr_border = myArray.attr_border;
+            inv_att = myArray.inv_att;
+            items = myArray.items;
+            tax_details = myArray.tax_details;
+            tax_details_total = myArray.tax_details_total;
+            design = myArray.design;
+            tax_split_up_total = myArray.tax_split_up_total;
+            footer = myArray.footer;
+            others = myArray.others;
+            config = myArray.config;
+
+
+            // console.log(decodedString); // Outputs: "Hello World!"
+
+            if (page_count == 0) {
+                if (others.einvoice_details != '') {
+                    Top_elements.style.paddingTop = '50px';
+                }
+                else if (others.einvoice_details == '' && design.logo == '') {
+                    Top_elements.style.paddingTop = '60px';
+                }
+                else {
+                    Top_elements.style.paddingTop = '20px';
+                }
+            }
+            else if (design.logo != '') {
+                Top_elements.style.paddingTop = '40px';
+            }
+            else {
+                Top_elements.style.paddingTop = '60px';
+            }
+
+
+            if (product_columns == undefined) {
+                product_columns = [];
+            }
+
+            if (hsncolumns == undefined) {
+                hsncolumns = [
+                    {
+                        name: "hsn/sac",
+                        display_name: "HSN/SAC",
+                        display_name_rate: "",
+                        display_name_amt: "",
+                        visible: "1"
+                    },
+                    {
+                        name: "taxable_value",
+                        display_name: "Taxable Value",
+                        display_name_rate: "",
+                        display_name_amt: "",
+                        visible: "1"
+                    },
+                    {
+                        name: "output_cgst",
+                        display_name: "Central Tax",
+                        display_name_rate: "Rate",
+                        display_name_amt: "Amount",
+                        visible: "1"
+                    },
+                    {
+                        name: "output_sgst",
+                        display_name: "State Tax",
+                        display_name_rate: "Rate",
+                        display_name_amt: "Amount",
+                        visible: "1"
+                    },
+                    {
+                        name: "output_igst",
+                        display_name: "Integrated Tax Amount",
+                        display_name_rate: "Rate",
+                        display_name_amt: "Amount",
+                        visible: "0"
+                    },
+                    {
+                        name: "cess",
+                        display_name: "Cess",
+                        display_name_rate: "Rate",
+                        display_name_amt: "Amount",
+                        visible: "0"
+                    },
+                    {
+                        name: "round_off",
+                        display_name: "Round Off",
+                        visible: "1"
+                    },
+                    {
+                        name: "total_tax",
+                        display_name: "Total Tax Amount",
+                        visible: "1"
+                    }
+                ];
+            }
+
+            if (heading == undefined) {
+                heading = {
+                    name: "Tax Invoice",
+                    doc_copy_type: "Original"
+                }
+            }
+
+            if (design == undefined) {
+                design = {
+                    logo: ""
+                }
+            }
+
+            if (be_details == undefined) {
+                be_details = {
+                    beb_name: "",
+                    beb_addline1: "",
+                    beb_addline2: "",
+                    beb_addline3: "",
+                    pin: "",
+                    phone: "",
+                    beb_gstin: ""
+                }
+            }
+
+            if (bill_to == undefined) {
+                bill_to = {
+                    party_name: "",
+                    party_add1: "",
+                    party_add2: "",
+                    party_add3: "",
+                    party_pin: "",
+                    party_phone: "",
+                    party_gstin: ""
+                }
+            }
+
+            if (ship_to == undefined) {
+                ship_to = {
+                    name: "",
+                    add1: "",
+                    add2: "",
+                    add3: "",
+                    pin: "",
+                    phone: "",
+                    gstin: ""
+                }
+            }
+
+            if (master_details == undefined) {
+                master_details = {
+                    inv_no: "",
+                    pmt_doc_date: "",
+                    place_supply: "",
+                    paid_topay: "",
+                    doc_reference: ""
+                }
+            }
+
+            if (attr_border == undefined) {
+                attr_border = {
+                    enable: false
+                }
+            }
+
+            if (inv_att == undefined) {
+                inv_att = [];
+            }
+
+            if (items == undefined) {
+                items = [
+                    {
+                        sl_no: "",
+                        marks_nos_container: "",
+                        no_pkgs: "",
+                        pro_name: "",
+                        hsn: "",
+                        qty: "",
+                        unit: "",
+                        mrp: "",
+                        rate: "",
+                        disc1_per: "",
+                        disc1_amt: "",
+                        amount: "",
+                        desc: "",
+                        key: "",
+                        value: "",
+                        tax_rate: ""
+                    }
+                ];
+            }
+
+            if (others == undefined) {
+                others = {
+                    name: "",
+                    total_qty: "",
+                    total_amount: "",
+                    bank_details: "",
+                    terms_and_conditions: "",
+                    upi_id: "",
+                    arrears: "",
+                    total_outstand: "",
+                    amt_in_words: "",
+                    tax_amt_in_words: "",
+                    einvoice_details: "",
+                    irn: "",
+                    ack_no: "",
+                    ack_date: ""
+                }
+            }
+
+            if (config == undefined) {
+                config = {
+                    authorised_signatory: true,
+                    be_details: true,
+                    bill_to: true,
+                    ship_to: true,
+                    display_desc: "1",
+                    footer_date: true
+                }
+            }
+
+            if (tax_details == undefined) {
+                tax_details = [];
+            }
+
+            if (tax_details_total == undefined) {
+                tax_details_total = {
+                    name: "",
+                    total_taxable_value: "",
+                    total_central_tax_amount: "",
+                    total_state_tax_amount: "",
+                    total_integrated_tax_amount: "",
+                    total_cess_tax_amount: "",
+                    total_tax_amount: ""
+                }
+            }
+
+            if (tax_split_up_total == undefined) {
+                tax_split_up_total = [];
+            }
+
+            if (footer == undefined) {
+                footer = [];
+            }
+
+
+        }
+
+
+        //  -----------------------------------------------header---------------------------------------------------------------
+        function header() {
+
+
+            topdiv();
+
+            //main div
+            var mainDiv = document.createElement('div');
+            mainDiv.id = 'main_div';
+            mainDiv.className = 'maindiv';
+            mainDiv.style.height = 'auto';
+            mainDiv.style.border = '1px solid';
+            if (others.einvoice_details != '') {
+                mainDiv.style.marginTop = '1%';
+            } else {
+                mainDiv.style.marginTop = '5%';
+            }
+
+            if (others.einvoice_details == '' && design.logo == '') {
+                mainDiv.style.marginTop = '2%';
+            }
+            mainDiv.style.borderBottomWidth = '0px';
+            mainDiv.style.borderRightWidth = '0px';
+            mainDiv.style.borderLeftWidth = '0px';
+            mainDiv.style.borderTopWidth = '0px';
+            if (heading == undefined) {
+                heading;
+            } else {
+                var h5 = document.createElement('h5');
+                h5.style.textAlign = 'center';
+                h5.style.fontSize = '15';
+                h5.style.marginTop = '-1%';
+                h5.innerHTML = heading.name;
+
+                if (design == undefined) {
+                    design;
+                }
+                else {
+                    if (design.logo != '') {
+                        var figure = document.createElement("figure");
+                        figure.style.width = '100';
+                        figure.style.height = '100';
+
+                        if (others.einvoice_details != '') {
+                            if (page_count > 0) {
+                                figure.style.marginBottom = '-5%';
+                                figure.style.marginTop = '-4%';
+                            }
+                            else {
+                                figure.style.marginBottom = '-14%';
+                            }
+                        }
+                        else {
+                            figure.style.marginBottom = '-8%';
+                        }
+
+                        var a = document.createElement("img");
+                        a.src = design.logo;
+                        a.style.width = '100';
+                        a.style.height = '100';
+                        a.style.objectFit = 'contain';
+
+                        figure.appendChild(a);
+                        Top_elements.appendChild(figure);
+                    }
+                }
+
+                Top_elements.appendChild(h5);
+
+                if (heading.doc_copy_type != '') {
+                    var h4 = document.createElement('h4');
+                    h4.style.textAlign = 'center';
+                    h4.style.fontSize = '12';
+                    h4.style.marginTop = '-3%';
+                    h4.innerHTML = '(' + heading.doc_copy_type + ')';
+
+                    Top_elements.appendChild(h4);
+                }
+            }
+
+
+
+            //e-invoice qrcode and IRN table
+            if (page_count == 0) {
+
+                if (others.einvoice_details == null || others.einvoice_details == undefined) {
+                    if (design.logo != '') {
+                        figure.style.marginBottom = '-3%';
+                    }
+                }
+                else if (others.einvoice_details != '') {
+                    var irndiv = document.createElement('div');
+                    irndiv.className = 'irndiv';
+                    irndiv.style.width = '70%';
+                    irndiv.style.marginTop = '-6%';
+
+                    //creating table
+                    var irntable = document.createElement('table');
+                    irntable.className = 'irntable';
+                    irntable.style.width = '100%';
+                    irntable.style.fontSize = '12';
+
+                    // if (others.irn != '') {
+                        //creating table row1
+                        var irn_row = document.createElement('tr');
+                        irn_row.className = 'irn_row';
+
+                        //irn number td
+                        var irn_heading = document.createElement('td');
+                        irn_heading.style.width = '10%';
+                        irn_heading.style.borderStyle = 'hidden';
+
+                        irn_heading.innerHTML = 'IRN&ensp;&ensp;&ensp;&ensp;&ensp; : ';
+                        irn_row.appendChild(irn_heading);
+
+                        var irn_data = document.createElement('td');
+                        irn_data.style.width = '40%';
+
+                        irn_data.innerHTML = '<b>' + others.irn + '</b>';
+                        irn_row.appendChild(irn_data);
+
+                        irntable.appendChild(irn_row);
+                    // }
+
+                    // if (others.ack_no != '') {
+                        //Ack number td
+                        var ackno_row = document.createElement('tr');
+                        ackno_row.className = 'ackno_row';
+
+                        //creating table row data
+                        var ackno_heading = document.createElement('td');
+                        ackno_heading.style.width = '10%';
+                        ackno_heading.style.borderStyle = 'hidden';
+
+                        ackno_heading.innerHTML = 'Ack No.&ensp;&ensp;: ';
+                        ackno_row.appendChild(ackno_heading);
+
+                        var ackno_data = document.createElement('td');
+                        ackno_data.style.width = '40%';
+
+                        ackno_data.innerHTML = '<b>' + others.ack_no + '</b>';
+                        ackno_row.appendChild(ackno_data);
+
+                        irntable.appendChild(ackno_row);
+                    // }
+
+                    // if (others.ack_date != '') {
+                        //Ack date td
+                        var ackdate_row = document.createElement('tr');
+
+                        //creating table row data
+                        var ackdate_heading = document.createElement('td');
+                        ackdate_heading.style.width = '10%';
+                        ackdate_heading.style.borderStyle = 'hidden';
+
+                        ackdate_heading.innerHTML = 'Ack Date&ensp;: ';
+                        ackdate_row.appendChild(ackdate_heading);
+
+
+                        var ackdate_data = document.createElement('td');
+                        ackdate_data.style.width = '40%';
+
+                        ackdate_data.innerHTML = '<b>' + others.ack_date + '</b>';
+                        ackdate_row.appendChild(ackdate_data);
+                    // }
+
+                    //appending table to div
+                    irntable.appendChild(ackdate_row);
+                    irndiv.appendChild(irntable);
+
+
+                    //e-invoice qrcode 
+                    var einvoice_heading = document.createElement('h6');
+                    einvoice_heading.innerHTML = "e-Invoice";
+                    einvoice_heading.style.marginLeft = '82%';
+                    einvoice_heading.style.marginTop = '-6%';
+                    Top_elements.appendChild(einvoice_heading);
+
+                    var qrcode = document.createElement('canvas');
+                    qrcode.id = "qr";
+                    qrcode.style.marginLeft = '75%';
+                    qrcode.style.marginTop = '-2%';
+
+                    Top_elements.appendChild(qrcode);
+                    document.body.appendChild(Top_elements);
+
+                    var qr = new QRious({
+                        element: document.getElementById('qr'),
+                        value: others.einvoice_details,
+                        level: 'H', // Error correction level of the QR code (L, M, Q, H),
+                        size: 160,
+                    });
+
+                    Top_elements.appendChild(irndiv);
+                }
+            }
+
+            //creating table
+            var maintable = document.createElement('table');
+            maintable.className = 'maintable';
+            maintable.style.width = '100%';
+            maintable.style.fontSize = '12';
+            // maintable.style.marginTop = '5%';  
+
+            //creating table row1
+            table_row_main = document.createElement('tr');
+
+            //creating table row data
+            var table_data_add = document.createElement('td');
+            table_data_add.style.width = '50%';
+            table_data_add.rowSpan = '3';
+            table_data_add.style.padding = '3px';
+            table_data_add.style.verticalAlign = 'top';
+
+            if (config.be_details != true && config.be_details != false) {
+                config.be_details = true;
+            }
+            else if (config == undefined) {
+                config;
+            }
+
+            if (config.be_details == true) {
+                if (be_details == undefined) {
+                    be_details;
+                }
+                else {
+                   if(be_details.beb_name == '' && be_details.beb_addline1 == '' && be_details.beb_addline2 == '' && be_details.beb_addline3 == '' && be_details.pin == '' && be_details.phone =='' && be_details.beb_gstin == ''){
+                    table_row_main.appendChild(table_data_add);
+                   }
+                   else{ 
+                    var addressString = '<b>' + be_details.beb_name.toUpperCase() + '</b>';
+
+                    if (be_details.beb_addline1 != '') {
+                        addressString += '<br>' + be_details.beb_addline1;
+                    }
+
+                    if (be_details.beb_addline2 != '') {
+                        addressString += ' '+be_details.beb_addline2;
+                    }
+
+                    if (be_details.beb_addline3 != '') {
+                        addressString += '<br>' + be_details.beb_addline3;
+                    }
+
+                    if (be_details.pin != '') {
+                        addressString += ' '+be_details.pin;
+                    }
+
+                    if (be_details.phone != '') {
+                        addressString += '<br>Phone: ' + be_details.phone;
+                    }
+
+                    if (be_details.beb_gstin != '') {
+                        addressString += '<br><b>GSTIN/UIN: ' + be_details.beb_gstin + '</b>';
+                    }
+
+                    table_data_add.innerHTML = addressString;
+                    table_row_main.appendChild(table_data_add)
+                  }
+
+
+                    // if (be_details.phone != '' && be_details.beb_gstin == '') {
+                    //     table_data_add.innerHTML = '<b>' + be_details.beb_name.toUpperCase() + '</b>' + '<br>' + be_details.beb_addline1 + ' ' + be_details.beb_addline2 + ' ' + be_details.beb_addline3 + ' ' + be_details.pin + '<br>Phone: ' + be_details.phone;
+                    //     table_row_main.appendChild(table_data_add);
+                    // }
+                    // else if (be_details.phone == '' && be_details.beb_gstin != '') {
+                    //     table_data_add.innerHTML = '<b>' + be_details.beb_name.toUpperCase() + '</b>' + '<br>' + be_details.beb_addline1 + ' ' + be_details.beb_addline2 + ' ' + be_details.beb_addline3 + ' ' + be_details.pin + '<br><b>GSTIN/UIN: ' + be_details.beb_gstin + '<b>';
+                    //     table_row_main.appendChild(table_data_add);
+                    // }
+                    // else if (be_details.phone != '' && be_details.beb_gstin != '') {
+                    //     table_data_add.innerHTML = '<b>' + be_details.beb_name.toUpperCase() + '</b>' + '<br>' + be_details.beb_addline1 + ' ' + be_details.beb_addline2 + ' ' + be_details.beb_addline3 + ' ' + be_details.pin + '<br>Phone: ' + be_details.phone + '<br><b>GSTIN/UIN: ' + be_details.beb_gstin + '<b>';
+                    //     table_row_main.appendChild(table_data_add);
+                    // }
+                    // else if (be_details.phone == '' && be_details.beb_gstin == '') {
+                    //     table_data_add.innerHTML = '<b>' + be_details.beb_name.toUpperCase() + '</b>' + '<br>' + be_details.beb_addline1 + ' ' + be_details.beb_addline2 + ' ' + be_details.beb_addline3 + ' ' + be_details.pin;
+                    //     table_row_main.appendChild(table_data_add);
+                    // }
+                }
+            }
+            else {
+                table_row_main.appendChild(table_data_add);
+            }
+
+            // table_row_main.appendChild(table_data_add);
+
+            var table_data_inv = document.createElement('td');
+            table_data_inv.style.width = '25%';
+
+            table_data_inv.innerHTML = heading.name + ' No.<br><b>' + master_details.inv_no + '</b>';
+            table_row_main.appendChild(table_data_inv);
+
+            var table_data_date = document.createElement('td');
+            table_data_date.style.width = '25%';
+
+            table_data_date.innerHTML = 'Dated<br><b>' + master_details.pmt_doc_date + '</b>';
+            table_row_main.appendChild(table_data_date);
+
+            maintable.appendChild(table_row_main);
+
+            //creating table row1
+            table_row_main1 = document.createElement('tr');
+
+            var table_data_note = document.createElement('td');
+            table_data_note.style.width = '25%';
+
+            table_data_note.innerHTML = 'Place of Supply<br><b>' + master_details.place_supply + '</b>';
+            table_row_main1.appendChild(table_data_note);
+
+            var table_data_mode = document.createElement('td');
+            table_data_mode.style.width = '25%';
+
+            table_data_mode.innerHTML = 'Mode/Terms of Payment<br><b>' + master_details.paid_topay + '</b>';
+            table_row_main1.appendChild(table_data_mode);
+
+            maintable.appendChild(table_row_main1);
+
+            //creating table row3
+            table_row_main2 = document.createElement('tr');
+
+            var table_data_Ref = document.createElement('td');
+            table_data_Ref.style.width = '25%';
+            table_data_Ref.colSpan = '2';
+
+            table_data_Ref.innerHTML = 'Reference No. & Date.<br><b>' + master_details.doc_reference + '</b>';
+            table_row_main2.appendChild(table_data_Ref);
+
+            // var table_data_Oref= document.createElement ('td'); 
+            // table_data_Oref.style.width='25%';
+
+            // table_data_Oref.innerHTML="Other References<br><b>&nbsp</b>";
+            // table_row_main2.appendChild(table_data_Oref);
+
+            maintable.appendChild(table_row_main2);
+
+            //creating table row6
+            table_row_main3 = document.createElement('tr');
+
+            var table_data_addbuyer = document.createElement('td');
+            table_data_addbuyer.style.width = '50%';
+            table_data_addbuyer.rowSpan = '3';
+            table_data_addbuyer.style.padding = '3px';
+            table_data_addbuyer.style.verticalAlign = 'top';
+
+            if (config.bill_to != true && config.bill_to != false) {
+                config.bill_to = true;
+            }
+            else if (config == undefined) {
+                config;
+            }
+
+            if (config.bill_to == true) {
+
+                if (bill_to == undefined) {
+                    bill_to;
+                }
+                else {
+                   if(bill_to.party_name == '' && bill_to.party_add1 == '' && bill_to.party_add2 == '' && bill_to.party_add3 == '' && bill_to.party_pin == '' && bill_to.party_phone =='' && bill_to.party_gstin == ''){
+                     table_row_main3.appendChild(table_data_addbuyer);
+                   }
+                   else{ 
+                    var addressString = 'Buyer (Bill to)<br><b>' + bill_to.party_name.toUpperCase() + '</b>';
+
+                    if (bill_to.party_add1 != '') {
+                        addressString += '<br>' + bill_to.party_add1;
+                    }
+
+                    if (bill_to.party_add2 != '') {
+                        addressString += '<br>' + bill_to.party_add2;
+                    }
+
+                    if (bill_to.party_add3 != '') {
+                        addressString += '<br>' + bill_to.party_add3;
+                    }
+
+                    if (bill_to.party_pin != '') {
+                        addressString +='<br>'+bill_to.party_pin;
+                    }
+
+                    if (bill_to.party_phone != '') {
+                        addressString += '<br>Phone: ' + bill_to.party_phone;
+                    }
+
+                    if (bill_to.party_gstin != '') {
+                        addressString += '<br><b>GSTIN/UIN: ' + bill_to.party_gstin + '</b>';
+                    }
+
+                    table_data_addbuyer.innerHTML = addressString;
+                    table_row_main3.appendChild(table_data_addbuyer);
+
+                  }
+
+                    // if (bill_to.party_phone != '' && bill_to.party_gstin == '') {
+                    //     table_data_addbuyer.innerHTML = 'Buyer (Bill to)<br><b>' + bill_to.party_name.toUpperCase() + '</b>' + '<br>' + bill_to.party_add1 + '<br>' + bill_to.party_add2 + '<br>' + bill_to.party_add3 + '<br>' + bill_to.party_pin + '<br>Phone: ' + bill_to.party_phone;
+                    //     table_row_main3.appendChild(table_data_addbuyer);
+                    // }
+                    // else if (bill_to.party_phone == '' && bill_to.party_gstin != '') {
+                    //     table_data_addbuyer.innerHTML = 'Buyer (Bill to)<br><b>' + bill_to.party_name.toUpperCase() + '</b>' + '<br>' + bill_to.party_add1 + '<br>' + bill_to.party_add2 + '<br>' + bill_to.party_add3 + '<br>' + bill_to.party_pin + '<br><b>GSTIN/UIN: ' + bill_to.party_gstin + '<b>';
+                    //     table_row_main3.appendChild(table_data_addbuyer);
+                    // }
+                    // else if (bill_to.party_phone != '' && bill_to.party_gstin != '') {
+                    //     table_data_addbuyer.innerHTML = 'Buyer (Bill to)<br><b>' + bill_to.party_name.toUpperCase() + '</b>' + '<br>' + bill_to.party_add1 + '<br>' + bill_to.party_add2 + '<br>' + bill_to.party_add3 + '<br>' + bill_to.party_pin + '<br>Phone: ' + bill_to.party_phone + '<br><b>GSTIN/UIN: ' + bill_to.party_gstin + '<b>';
+                    //     table_row_main3.appendChild(table_data_addbuyer);
+                    // }
+                    // else if (bill_to.party_phone == '' && bill_to.party_gstin == '') {
+                    //     table_data_addbuyer.innerHTML = 'Buyer (Bill to)<br><b>' + bill_to.party_name.toUpperCase() + '</b>' + '<br>' + bill_to.party_add1 + '<br>' + bill_to.party_add2 + '<br>' + bill_to.party_add3 + '<br>' + bill_to.party_pin;
+                    //     table_row_main3.appendChild(table_data_addbuyer);
+                    // }
+                }
+            }
+            else {
+                table_row_main3.appendChild(table_data_addbuyer);
+            }
+
+
+            var table_data_addship = document.createElement('td');
+            table_data_addship.style.width = '50%';
+            table_data_addship.rowSpan = '3';
+            table_data_addship.colSpan = '2';
+            table_data_addship.style.padding = '3px';
+            table_data_addship.style.verticalAlign = 'top';
+
+            if (config.ship_to != true && config.ship_to != false) {
+                config.ship_to = true;
+            }
+            else if (config == undefined) {
+                config;
+            }
+
+            if (config.ship_to == true) {
+                if (ship_to == undefined) {
+                    ship_to;
+                }
+                else {
+                   if(ship_to.name == '' && ship_to.add1 == '' && ship_to.add2 == '' && ship_to.add3 == '' && ship_to.pin == '' && ship_to.phone =='' && ship_to.gstin == ''){
+                     table_row_main3.appendChild(table_data_addship);
+                   }
+                   else{ 
+                    var addressString = 'Consignee (Ship to)';
+                    
+                    if (ship_to.name != '') {
+                        addressString += '<br> <b>'+ ship_to.name.toUpperCase() + '</b>';
+                    }
+
+                    if (ship_to.add1 != '') {
+                        addressString += '<br>' + ship_to.add1;
+                    }
+
+                    if (ship_to.add2 != '') {
+                        addressString += '<br>' + ship_to.add2;
+                    }
+
+                    if (ship_to.add3 != '') {
+                        addressString += '<br>' + ship_to.add3;
+                    }
+
+                    if (ship_to.pin != '') {
+                        addressString +='<br>'+ship_to.pin;
+                    }
+
+                    if (ship_to.phone != '') {
+                        addressString += '<br>Phone: ' + ship_to.phone;
+                    }
+
+                    if (ship_to.gstin != '') {
+                        addressString += '<br><b>GSTIN/UIN: ' + ship_to.gstin + '</b>';
+                    }
+                    table_data_addship.innerHTML = addressString;
+                    table_row_main3.appendChild(table_data_addship);
+                }
+
+                    // if (ship_to.phone != '' && ship_to.gstin == '') {
+                    //     table_data_addship.innerHTML = 'Consignee (Ship to)<br><b>' + ship_to.name.toUpperCase() + '</b>' + '<br>' + ship_to.add1 + ' ' + ship_to.add2 + ' ' + ship_to.add3 + ' ' + ship_to.pin + '<br>Phone: ' + ship_to.phone;
+                    //     table_row_main3.appendChild(table_data_addship);
+                    // }
+                    // else if (ship_to.phone == '' && ship_to.gstin != '') {
+                    //     table_data_addship.innerHTML = 'Consignee (Ship to)<br><b>' + ship_to.name.toUpperCase() + '</b>' + '<br>' + ship_to.add1 + ' ' + ship_to.add2 + ' ' + ship_to.add3 + ' ' + ship_to.pin + '<br><b>GSTIN/UIN: ' + ship_to.gstin + '<b>';
+                    //     table_row_main3.appendChild(table_data_addship);
+                    // }
+                    // else if (ship_to.phone != '' && ship_to.gstin != '') {
+                    //     table_data_addship.innerHTML = 'Consignee (Ship to)<br><b>' + ship_to.name.toUpperCase() + '</b>' + '<br>' + ship_to.add1 + ' ' + ship_to.add2 + ' ' + ship_to.add3 + ' ' + ship_to.pin + '<br>Phone: ' + ship_to.phone + '<br><b>GSTIN/UIN: ' + ship_to.gstin + '<b>';
+                    //     table_row_main3.appendChild(table_data_addship);
+                    // }
+                    // else if (ship_to.phone == '' && ship_to.gstin == '') {
+                    //     table_data_addship.innerHTML = 'Consignee (Ship to)<br><b>' + ship_to.name.toUpperCase() + '</b>' + '<br>' + ship_to.add1 + ' ' + ship_to.add2 + ' ' + ship_to.add3 + ' ' + ship_to.pin;
+                    //     table_row_main3.appendChild(table_data_addship);
+                    // }
+                }
+            }
+            else {
+                table_row_main3.appendChild(table_data_addship);
+            }
+
+            maintable.appendChild(table_row_main3);
+
+            //appending table to maindiv
+            mainDiv.appendChild(maintable);
+
+            Top_elements.appendChild(mainDiv);
+            page.appendChild(Top_elements);
+        }
+
+        //-------------------------------------------------------attribute table-----------------------------------------------
+        function attribute() {
+
+            var subDiv = document.createElement('div');
+            subDiv.id = 'sub_div';
+            subDiv.className = 'sub_div';
+            subDiv.style.height = '11%';
+            subDiv.style.border = '1px solid';
+            subDiv.style.borderTopWidth = '0px';
+            subDiv.style.borderBottomWidth = '0px';
+            subDiv.style.marginTop = '-1%';
+
+            //creating table
+            var attrtable = document.createElement('table');
+            attrtable.className = 'attrtable';
+            attrtable.style.width = '50%';
+            attrtable.style.fontSize = '11';
+            attrtable.style.marginTop = '1%';
+
+            if (attr_border == undefined) {
+                attr_border;
+            }
+
+            if (attr_border.enable == false) {
+                attrtable.style.borderStyle = 'hidden';
+            }
+
+            var count1 = 0;
+
+            var loop_count1 = 0;
+            var count2 = 7;
+
+            for (i = 0; i < inv_att.length; i++) {
+
+                if (inv_att[i].value.length >= 25) {
+                    count2 = count2 - 1;
+                }
+
+                if (count1 > count2) {
+
+                    count2 = 7;
+
+                    var subDiv = document.createElement('div');
+                    subDiv.id = 'sub_div';
+                    subDiv.className = 'sub_div';
+                    subDiv.style.height = '10%';
+                    subDiv.style.marginLeft = '50%';
+                    subDiv.style.marginTop = '-14.5%';
+                    subDiv.style.borderBottomWidth = '0px';
+
+                    //creating table
+                    var attrtable = document.createElement('table');
+                    attrtable.className = 'attrtable';
+                    attrtable.style.width = '100%';
+                    attrtable.style.fontSize = '11';
+                    if (attr_border.enable == false) {
+                        attrtable.style.borderStyle = 'hidden';
+                    }
+                    // attrtable.style.marginTop ='-38%';
+
+                    //creating table row1
+                    table_row_attr = document.createElement('tr');
+                    if (attr_border.enable == false) {
+                        table_row_attr.style.borderStyle = 'hidden';
+                    }
+
+                    //creating table row data
+                    var table_data_key = document.createElement('th');
+                    table_data_key.style.width = '20%';
+                    table_data_key.style.textAlign = 'left';
+                    table_data_key.style.verticalAlign = 'top';
+                    // table_data_key.style.height ='25px';
+
+                    table_data_key.innerHTML = inv_att[i].key;
+                    table_row_attr.appendChild(table_data_key);
+
+                    var table_data_value = document.createElement('td');
+                    table_data_value.style.width = '30%';
+                    if (attr_border.enable == false) {
+                        table_data_value.style.borderStyle = 'hidden';
+                    }
+
+                    table_data_value.innerHTML = inv_att[i].value;
+                    table_row_attr.appendChild(table_data_value);
+
+                    attrtable.appendChild(table_row_attr);
+
+                    subDiv.appendChild(attrtable);
+
+                    //appending 
+                    Top_elements.appendChild(subDiv);
+                    page.appendChild(Top_elements);
+
+                    count1 = 0;
+                    //  i=i-1;
+
+
+                }
+
+                else {
+                    if (loop_count1 > 0) {
+                        attrtable.appendChild(table_row_attr);
+                    }
+
+                    //creating table row1
+                    table_row_attr = document.createElement('tr');
+                    if (attr_border.enable == false) {
+                        table_row_attr.style.borderStyle = 'hidden';
+                    }
+
+                    //creating table row data
+                    var table_data_key = document.createElement('th');
+                    table_data_key.style.width = '20%';
+                    table_data_key.style.textAlign = 'left';
+                    table_data_key.style.verticalAlign = 'top';
+
+                    // table_data_key.style.height ='25px';
+
+                    table_data_key.innerHTML = inv_att[i].key;
+                    table_row_attr.appendChild(table_data_key);
+
+                    var table_data_value = document.createElement('td');
+                    table_data_value.style.width = '30%';
+                    if (attr_border.enable == false) {
+                        table_data_value.style.borderStyle = 'hidden';
+                    }
+
+                    table_data_value.innerHTML = inv_att[i].value;
+                    table_row_attr.appendChild(table_data_value);
+
+                    attrtable.appendChild(table_row_attr);
+
+                    subDiv.appendChild(attrtable);
+                    //appending
+                    Top_elements.appendChild(subDiv);
+                    page.appendChild(Top_elements);
+
+                    loop_count1++;
+                }
+                count1++;
+            }
+        }
+
+        //-----------------------------------------------------watermark--------------------------------------------------------
+        // function mark() {
+        //     var watermark = document.createElement('div');
+        //     watermark.id = 'watermark';
+        //     watermark.className = 'watermark';
+        //     watermark.innerHTML = heading.doc_copy_type;
+
+        //     Top_elements.appendChild(watermark);
+        // }
+
+        //-----------------------------------------------------Image watermark--------------------------------------------------------
+        function imagemark() {
+            var imagewatermark = document.createElement("img");
+            imagewatermark.id = 'imgwatermark';
+            imagewatermark.className = 'imgwatermark';
+            imagewatermark.src = design.logo;
+
+            Top_elements.appendChild(imagewatermark);
+        }
+
+        //  ------------------------------------------------Body--------------------------------------------------------------
+        function body() {
+            //creating div for  table
+            var tableDiv = document.createElement('div');
+            tableDiv.id = 'table_Div';
+            tableDiv.className = 'tableDiv';
+            tableDiv.style.border = '1px solid';
+            tableDiv.style.borderBottomWidth = '0px';
+
+            //creating table
+            var body_table = document.createElement('table');
+            body_table.className = 'body_table';
+            body_table.id = 'bodytable';
+            body_table.style.width = '100%';
+            body_table.style.fontSize = '12';
+
+            if (inv_att == undefined) {
+                inv_att;
+            }
+
+            if (others.einvoice_details == '' && inv_att.length == '') {
+                body_table.style.height = '45%';
+            }
+            else if (others.einvoice_details != '' && inv_att.length == '') {
+                body_table.style.height = '35%';
+            }
+            else if (others.einvoice_details == '' && inv_att.length != '') {
+                body_table.style.height = '32%';
+            }
+            else {
+                body_table.style.height = '25%';
+            }
+
+            if (inv_att.length == '') {
+                tableDiv.style.borderTopWidth = '0px';
+            }
+
+            //creating table row
+            table_row_body = document.createElement('tr');
+            table_row_body.style.height = '10';
+
+            if (product_columns == undefined) {
+                product_columns;
+            }
+
+            if (product_columns == '') {
+                product_columns;
+            }
+
+            //creating table header
+            for (var s = 0; s < product_columns.length; s++) {
+
+                var header_si = document.createElement('th');
+                header_si.style.textAlign = 'center';
+                header_si.style.width = '1%';
+                header_si.innerHTML = product_columns[s].display_name;
+                table_row_body.appendChild(header_si);
+            }
+
+            //creating table row for line
+            var header_row_line = document.createElement('tr');
+            header_row_line.style.height = '1';
+
+            body_table.appendChild(table_row_body);
+            body_table.appendChild(header_row_line);
+            tableDiv.appendChild(body_table);
+            Top_elements.appendChild(tableDiv);
+
+            count = 0;
+            var table_row_body;
+            var table_row_bodydata;
+            var loop_count = 0;
+            // var first_page_item=25;
+            // if(others.tax_amt_in_words == ''){
+            //     first_page_item=15;
+            // }
+
+            if (others.einvoice_details != '') {
+                if (inv_att.length == '') {
+                    first_page_item = 25;
+                }
+                else {
+                    first_page_item = 15;
+                }
+            }
+            else {
+                first_page_item = 20;
+            }
+
+            var remaining_page_item = 30;
+
+            var page_item_check;
+            var l_last_si = "";
+            var l_current_si = "";
+            var l_current_des;
+            var table_row_igst;
+
+            if (items == undefined) {
+                items;
+            }
+
+            for (var i = 0; i < items.length; i++) {
+
+                if (page_count == 0) {
+                    page_item_check = first_page_item;
+                }
+                else {
+                    page_item_check = remaining_page_item;
+                }
+
+                if (count > page_item_check) {
+                    var count_check = page_item_check + 1;
+
+                    if (count == count_check) {
+                        body_table.appendChild(table_row_bodydata);
+                        // body_table.appendChild(table_row_des);
+                        tableDiv.appendChild(body_table);
+                        Top_elements.appendChild(tableDiv);
+                    }
+
+                    if (page_count == 0) {
+                        if (others.einvoice_details == '' || inv_att.length == '') {
+                            body_table.style.height = '50%';
+                        }
+                        else if (others.einvoice_details != '') {
+                            body_table.style.height = '40%';
+                        }
+                    }
+                    else {
+                        body_table.style.height = '50%';
+                    }
+
+                    page_count++;
+                    //  foot(); 
+
+
+                    if (page_count > 1) {
+                        body_table.style.height = '60%';
+                    }
+
+                    // if (inv_att.length == '') {
+                    //     body_table.style.height = '60%';
+                    // }
+
+                    //creating table row empty
+                    var table_row_bodydata_empty = document.createElement('tr');
+                    table_row_bodydata_empty.className = 'table_row_bodydata_empty';
+
+                    outer: for (p = 0; p < product_columns.length; p++) {
+                        for (k = 0; k < item_length; k++) {
+
+                            if (product_columns[p].name == keys[k]) {
+                                var table_data_emptysi = document.createElement('td');
+                                table_row_bodydata_empty.appendChild(table_data_emptysi);
+                            }
+                        }
+                    }
+
+                    body_table.appendChild(table_row_bodydata_empty);
+
+
+                    //continue to next page div and table
+                    var continue_div = document.createElement('div');
+                    continue_div.id = 'continue_div';
+                    continue_div.className = 'continueDiv';
+
+                    var continue_table = document.createElement('table');
+                    continue_table.style.width = '100%';
+
+                    //creating table row last
+                    var empty_row = document.createElement('tr');
+                    empty_row.className = 'table_row_total';
+
+                    var continue_data = document.createElement('td');
+                    continue_data.style.textAlign = "right"
+                    continue_data.style.fontSize = '12';
+                    continue_data.innerHTML = 'continued to next page';
+                    empty_row.appendChild(continue_data);
+
+                    continue_table.appendChild(empty_row);
+                    continue_div.appendChild(continue_table);
+                    Top_elements.appendChild(continue_div);
+
+
+                    page.appendChild(Top_elements);
+                    document.body.appendChild(page);
+
+
+                    //new page
+                    header();
+                    // attribute();
+                    // imagemark();
+
+                    //creating div for table in next page
+                    var tableDiv = document.createElement('div');
+                    tableDiv.id = 'table_Div';
+                    tableDiv.className = 'tableDiv';
+                    // tableDiv.style.height = '300';
+                    tableDiv.style.border = '1px solid';
+                    tableDiv.style.borderBottomWidth = '0px';
+                    tableDiv.style.borderTopWidth = '0px';
+
+
+                    //creating table
+                    var body_table = document.createElement('table');
+                    body_table.className = 'body_table';
+                    body_table.id = 'bodytable';
+                    body_table.style.width = '100%';
+                    body_table.style.fontSize = '12';
+                    body_table.style.height = '40%';
+
+
+                    // if(inv_att.length == ''){
+                    //   body_table.style.height = '45%'; 
+                    //   tableDiv.style.borderTopWidth = '0px';
+                    // }
+
+                    //creating table row
+                    table_row_body = document.createElement('tr');
+                    table_row_body.style.height = '10';
+
+                    for (var s = 0; s < product_columns.length; s++) {
+
+                        var header_si = document.createElement('th');
+                        header_si.style.textAlign = 'center';
+                        header_si.style.width = '1%';
+                        header_si.innerHTML = product_columns[s].display_name;
+                        table_row_body.appendChild(header_si);
+                    }
+
+                    //creating table row for line
+                    var header_row_line = document.createElement('tr');
+                    header_row_line.style.height = '1';
+
+                    body_table.appendChild(table_row_body);
+                    body_table.appendChild(header_row_line);
+                    tableDiv.appendChild(body_table);
+                    Top_elements.appendChild(tableDiv);
+
+                    count = 0;
+                    i = i - 1;
+                }
+                else {
+                    // if(loop_count>0)
+                    // {
+                    //     body_table.appendChild(table_row_bodydata);
+                    //     // body_table.appendChild(table_row_des);
+                    // }
+
+                    //creating table row
+                    table_row_bodydata = document.createElement('tr');
+                    table_row_bodydata.className = 'table_row_bodydata';
+                    table_row_bodydata.style.height = '1%';
+
+                    var keys = Object.keys(items[0]);
+
+                    var item_length = Object.keys(items[0]).length;
+
+                    outer: for (p = 0; p < product_columns.length; p++) {
+                        for (k = 0; k < item_length; k++) {
+
+                            var key_name = keys[k];
+                            var myJsonString = JSON.stringify(items[i]);
+                            var anotherObject = JSON.parse(myJsonString);
+
+                            if (product_columns[p].name == keys[k]) {
+
+                                if (key_name == "sl_no") {
+                                    var table_data_si = document.createElement('td');
+                                    table_data_si.style.verticalAlign = 'top';
+                                    table_data_si.style.width = '3%';
+                                    table_data_si.style.textAlign = 'center';
+                                    table_data_si.innerHTML = anotherObject[key_name];
+                                    table_row_bodydata.appendChild(table_data_si);
+                                }
+                                if (key_name == "marks_nos_container") {
+                                    var table_data_si = document.createElement('td');
+                                    table_data_si.style.verticalAlign = 'top';
+                                    table_data_si.style.width = '3%';
+                                    table_data_si.style.textAlign = 'center';
+                                    table_data_si.innerHTML = anotherObject[key_name];
+                                    table_row_bodydata.appendChild(table_data_si);
+                                }
+                                if (key_name == "no_pkgs") {
+                                    var table_data_si = document.createElement('td');
+                                    table_data_si.style.verticalAlign = 'top';
+                                    table_data_si.style.width = '3%';
+                                    table_data_si.style.textAlign = 'center';
+                                    table_data_si.innerHTML = anotherObject[key_name];
+                                    table_row_bodydata.appendChild(table_data_si);
+                                }
+                                if (key_name == "pro_name") {
+                                    var table_data_si = document.createElement('td');
+                                    table_data_si.style.verticalAlign = 'top';
+                                    table_data_si.style.width = '50%';
+                                    table_data_si.style.textAlign = 'left';
+
+                                    if (anotherObject["desc"] != '') {
+
+                                        //display_desc is 1 then same line right
+                                        if (config.display_desc == 1) {
+
+                                            l_last_si = anotherObject["sl_no"];
+
+                                            if (l_current_si != l_last_si) {
+                                                l_current_si = "" + anotherObject["sl_no"];
+
+                                                table_data_si.innerHTML = anotherObject[key_name] + '<font size="1px;">&ensp;' + anotherObject["desc"] + '</font>';
+                                                table_row_bodydata.appendChild(table_data_si);
+                                            }
+                                            else {
+                                                table_data_si.innerHTML = anotherObject[key_name];
+                                                table_row_bodydata.appendChild(table_data_si);
+                                            }
+                                        }
+                                        // display_desc is 2 then new line down
+
+                                        if (config.display_desc == 2) {
+
+                                            table_data_si.innerHTML = anotherObject[key_name];
+
+                                            l_last_si = anotherObject["sl_no"];
+
+                                            if (l_current_si != l_last_si) {
+                                                l_current_si = "" + anotherObject["sl_no"];
+
+                                                //creating table row for narration
+                                                var table_row_des = document.createElement('tr');
+
+                                                var table_data_des = document.createElement('td');
+                                                table_data_des.className = 'table_data_des';
+                                                table_data_des.style.fontSize = '9px';
+                                                table_data_des.style.border = 'none';
+                                                table_data_des.innerHTML = '<p class="tab">' + anotherObject["desc"] + '</p>';
+                                                table_row_des.appendChild(table_data_des);
+
+                                                table_data_si.appendChild(table_row_des);
+                                                table_row_bodydata.appendChild(table_data_si);
+                                            }
+                                        }
+
+                                        //null check
+                                        if (config.display_desc == '' || config.display_desc != 1 && config.display_desc != 2) {
+
+                                            table_data_si.innerHTML = anotherObject[key_name];
+
+                                            l_last_si = anotherObject["sl_no"];
+
+                                            if (l_current_si != l_last_si) {
+                                                l_current_si = "" + anotherObject["sl_no"];
+
+                                                //creating table row for narration
+                                                var table_row_des = document.createElement('tr');
+
+                                                var table_data_des = document.createElement('td');
+                                                table_data_des.className = 'table_data_des';
+                                                table_data_des.style.fontSize = '9px';
+                                                table_data_des.style.border = 'none';
+
+                                                table_data_des.innerHTML = '<p class="tab">' + anotherObject["desc"] + '</p>';
+                                                table_row_des.appendChild(table_data_des);
+
+                                                table_data_si.appendChild(table_row_des);
+                                                table_row_bodydata.appendChild(table_data_si);
+
+                                            }
+                                            else {
+                                                table_data_si.innerHTML = anotherObject[key_name];
+                                                table_row_bodydata.appendChild(table_data_si);
+                                            }
+                                        }
+                                    }
+                                    else { //description of Item null
+                                        table_data_si.innerHTML = anotherObject[key_name];
+                                        table_row_bodydata.appendChild(table_data_si);
+                                    }
+                                    break;
+                                }
+
+                                if (key_name == "hsn") {
+                                    var table_data_si = document.createElement('td');
+                                    table_data_si.style.verticalAlign = 'top';
+                                    table_data_si.style.width = '4%';
+                                    table_data_si.style.textAlign = 'center';
+                                    table_data_si.innerHTML = anotherObject[key_name];
+                                    table_row_bodydata.appendChild(table_data_si);
+                                }
+                                if (key_name == "tax_rate") {
+                                    var table_data_si = document.createElement('td');
+                                    table_data_si.style.verticalAlign = 'top';
+                                    table_data_si.style.width = '4%';
+                                    table_data_si.style.textAlign = 'center';
+                                    table_data_si.innerHTML = anotherObject[key_name];
+                                    table_row_bodydata.appendChild(table_data_si);
+                                }
+                                if (key_name == "qty") {
+                                    var table_data_si = document.createElement('td');
+                                    table_data_si.style.verticalAlign = 'top';
+                                    table_data_si.style.width = '7%';
+                                    table_data_si.style.textAlign = 'center';
+                                    table_data_si.innerHTML = anotherObject[key_name];
+                                    table_row_bodydata.appendChild(table_data_si);
+                                }
+                                if (key_name == "unit") {
+                                    var table_data_si = document.createElement('td');
+                                    table_data_si.style.verticalAlign = 'top';
+                                    table_data_si.style.width = '5%';
+                                    table_data_si.style.textAlign = 'center';
+                                    table_data_si.innerHTML = anotherObject[key_name];
+                                    table_row_bodydata.appendChild(table_data_si);
+                                }
+                                if (key_name == "mrp") {
+                                    var table_data_si = document.createElement('td');
+                                    table_data_si.style.verticalAlign = 'top';
+                                    table_data_si.style.width = '8%';
+                                    table_data_si.style.textAlign = 'right';
+                                    table_data_si.innerHTML = anotherObject[key_name];
+                                    table_row_bodydata.appendChild(table_data_si);
+                                }
+                                if (key_name == "rate") {
+                                    var table_data_si = document.createElement('td');
+                                    table_data_si.style.verticalAlign = 'top';
+                                    table_data_si.style.width = '8%';
+                                    table_data_si.style.textAlign = 'right';
+                                    table_data_si.innerHTML = anotherObject[key_name];
+                                    table_row_bodydata.appendChild(table_data_si);
+                                }
+                                if (key_name == "disc1_per") {
+                                    var table_data_si = document.createElement('td');
+                                    table_data_si.style.verticalAlign = 'top';
+                                    table_data_si.style.width = '5%';
+                                    table_data_si.style.textAlign = 'center';
+                                    table_data_si.innerHTML = anotherObject[key_name];
+                                    table_row_bodydata.appendChild(table_data_si);
+                                }
+                                if (key_name == "disc1_amt") {
+                                    var table_data_si = document.createElement('td');
+                                    table_data_si.style.verticalAlign = 'top';
+                                    table_data_si.style.width = '8%';
+                                    table_data_si.style.textAlign = 'right';
+                                    table_data_si.innerHTML = anotherObject[key_name];
+                                    table_row_bodydata.appendChild(table_data_si);
+                                }
+                                if (key_name == "amount") {
+                                    var table_data_si = document.createElement('td');
+                                    table_data_si.style.verticalAlign = 'top';
+                                    table_data_si.style.width = '10%';
+                                    table_data_si.style.textAlign = 'right';
+                                    table_data_si.innerHTML = anotherObject[key_name];
+                                    table_row_bodydata.appendChild(table_data_si);
+                                }
+                            }
+                        }
+                    }
+                    body_table.appendChild(table_row_bodydata);
+
+
+                    //creating table row empty
+                    var table_row_bodydata_empty = document.createElement('tr');
+                    table_row_bodydata_empty.className = 'table_row_bodydata_empty';
+
+                    outer: for (p = 0; p < product_columns.length; p++) {
+                        for (k = 0; k < item_length; k++) {
+
+                            if (product_columns[p].name == keys[k]) {
+                                var table_data_emptysi = document.createElement('td');
+                                table_row_bodydata_empty.appendChild(table_data_emptysi);
+                            }
+                        }
+                    }
+
+                
+                    //new code
+
+                    if (items[i].key != '' && items[i].key != null) {
+                        var table_row_cgst = document.createElement('tr');
+                        table_row_cgst.style.height = "2%";
+                        table_row_cgst.style.borderStyle = "hidden";
+                        table_row_cgst.className = 'table_row_cgst';
+
+                        for (p = 0; p < product_columns.length; p++) {
+                            for (k = 0; k < item_length; k++) {
+
+                                // var key_name= keys[k];
+                                var myJsonString = JSON.stringify(items[i]);
+                                var anotherObject = JSON.parse(myJsonString);
+
+                                if (product_columns[p].name == "pro_name") {
+                                    var table_data_csi = document.createElement('td');
+                                    table_data_csi.style.textAlign = "right"
+                                    table_data_csi.innerHTML = anotherObject["key"]
+                                    table_row_cgst.appendChild(table_data_csi);
+                                    break;
+                                }
+                                else if (product_columns[p].name == "amount") {
+                                    var table_data_csi = document.createElement('td');
+                                    table_data_csi.style.textAlign = "right"
+                                    table_data_csi.innerHTML = anotherObject["value"]
+                                    table_row_cgst.appendChild(table_data_csi);
+                                    break;
+                                }
+                                else {
+                                    var table_data_csi = document.createElement('td');
+                                    table_row_cgst.appendChild(table_data_csi);
+                                    break;
+                                }
+                            }
+                        }
+                        body_table.appendChild(table_row_cgst);
+                    }
+                    //new code ends 
+
+                    loop_count++;
+                }
+                count++;
+            }
+            page_count++
+
+            if (tax_split_up_total == undefined) {
+                tax_split_up_total;
+            }
+
+            if (tax_split_up_total != '') {
+                //basic total line row
+                var table_row_hrline = document.createElement('tr');
+                table_row_hrline.className = 'table_row_basictotal';
+                table_row_hrline.style.height = '1px'
+
+                outer: for (p = 0; p < product_columns.length; p++) {
+                    for (k = 0; k < item_length; k++) {
+
+                        if (product_columns[p].name == "amount") {
+                            var hrlinr = document.createElement("hr");
+                            hrlinr.style.border = '1px solid';
+                            table_row_hrline.appendChild(hrlinr);
+                            break;
+                        }
+                        else {
+                            var table_data_csi = document.createElement('td');
+                            table_row_hrline.appendChild(table_data_csi);
+                            break;
+                        }
+                    }
+                }
+                body_table.appendChild(table_row_hrline);
+
+
+                //basic total row inside table
+                var table_row_basictotal = document.createElement('tr');
+                table_row_basictotal.className = 'table_row_basictotal';
+                table_row_basictotal.style.height = '6%'
+
+                outer: for (p = 0; p < product_columns.length; p++) {
+                    for (k = 0; k < item_length; k++) {
+
+                        if (product_columns[p].name == "amount") {
+                            var table_data_basictotal = document.createElement('td');
+                            table_data_basictotal.className = 'table_data_basictotal';
+                            table_data_basictotal.style.textAlign = 'right';
+                            table_data_basictotal.innerHTML = tax_details_total.total_taxable_value;
+                            table_row_basictotal.appendChild(table_data_basictotal);
+                            break;
+                        }
+                        else {
+                            var table_data_csi = document.createElement('td');
+                            table_row_basictotal.appendChild(table_data_csi);
+                            break;
+                        }
+                    }
+                }
+                body_table.appendChild(table_row_basictotal);
+
+                //empty line row
+                var table_row_lineempty = document.createElement('tr');
+                table_row_lineempty.className = 'table_row_basictotal';
+                table_row_lineempty.style.height = '2%'
+
+                outer: for (p = 0; p < product_columns.length; p++) {
+                    for (k = 0; k < item_length; k++) {
+
+                        if (product_columns[p].name == keys[k]) {
+                            var table_data_emptysi = document.createElement('td');
+                            table_row_lineempty.appendChild(table_data_emptysi);
+                        }
+                    }
+                }
+                body_table.appendChild(table_row_lineempty);
+            }
+
+            //taxsplit table gst 
+
+            for (var j = 0; j < tax_split_up_total.length; j++) {
+
+                var table_row_cgst = document.createElement('tr');
+                table_row_cgst.style.height = "2%";
+                table_row_cgst.style.borderStyle = "hidden";
+                table_row_cgst.className = 'table_row_cgst';
+
+                for (p = 0; p < product_columns.length; p++) {
+                    for (k = 0; k < item_length; k++) {
+
+                        if (product_columns[p].name == "pro_name") {
+                            var table_data_gstname = document.createElement('td');
+                            table_data_gstname.innerHTML = '<b><I>' + tax_split_up_total[j].name + '</I></b>';
+                            table_data_gstname.style.textAlign = "right";
+                            table_row_cgst.appendChild(table_data_gstname);
+                            break;
+                        }
+                        else if (product_columns[p].name == "rate") {
+                            var table_data_gstrate = document.createElement('td');
+                            table_data_gstrate.innerHTML = '<b><I>' + tax_split_up_total[j].rate + '</I></b>';
+                            table_data_gstrate.style.textAlign = "right";
+                            table_row_cgst.appendChild(table_data_gstrate);
+                            break;
+                        }
+                        else if (product_columns[p].name == "amount") {
+                            var table_data_gstamt = document.createElement('td');
+                            table_data_gstamt.innerHTML = '<b><I>' + tax_split_up_total[j].amount + '</I></b>';
+                            table_data_gstamt.style.textAlign = "right";
+                            table_row_cgst.appendChild(table_data_gstamt);
+                            break;
+                        }
+                        else {
+                            var table_data_csi = document.createElement('td');
+                            table_row_cgst.appendChild(table_data_csi);
+                            break;
+                        }
+                    }
+                }
+                body_table.appendChild(table_row_cgst);
+            }
+
+            body_table.appendChild(table_row_bodydata_empty);
+
+
+            //creating table row last
+            var table_row_total = document.createElement('tr');
+            table_row_total.className = 'table_row_total';
+            table_row_total.style.height = '2%';
+
+            for (p = 0; p < product_columns.length; p++) {
+                for (k = 0; k < item_length; k++) {
+
+
+                    if (product_columns[p].name == "pro_name") {
+                        var table_data_tot = document.createElement('td');
+                        table_data_tot.style.textAlign = 'right';
+                        table_data_tot.style.fontWeight = 'bold';
+                        table_data_tot.innerHTML = others.name;
+                        table_row_total.appendChild(table_data_tot);
+                        break;
+                    }
+                    else if (product_columns[p].name == "qty") {
+                        var table_data_tqty = document.createElement('td');
+                        table_data_tqty.style.textAlign = 'center';
+                        table_data_tqty.innerHTML = '<b>' + others.total_qty + '</b>';
+                        table_row_total.appendChild(table_data_tqty);
+                        break;
+                    }
+                    else if (product_columns[p].name == "amount") {
+                        var table_data_tamt = document.createElement('td');
+                        table_data_tamt.style.textAlign = 'right';
+                        table_data_tamt.innerHTML = '<b>₹' + others.total_amount + '</b>';
+                        table_row_total.appendChild(table_data_tamt);
+                        break;
+                    }
+                    else {
+                        var table_data_csi = document.createElement('td');
+                        table_row_total.appendChild(table_data_csi);
+                        break;
+                    }
+                }
+            }
+            body_table.appendChild(table_row_total);
+
+            tableDiv.appendChild(body_table);
+            Top_elements.appendChild(tableDiv);
+
+            var spaceline = document.createElement("p");
+            Top_elements.appendChild(spaceline);
+            page.appendChild(Top_elements);
+            document.body.appendChild(page);
+        }
+
+         //----------------------------------------------apartment total-------------------------------------------------------------
+         function tot_table() {
+            if (config.display_arrears == true) {
+
+                // if (others.arrears != '') {
+                    //creating div for  table
+                    var tot_Div = document.createElement('div');
+                    tot_Div.id = 'tot_Div';
+                    tot_Div.className = 'totDiv';
+                    tot_Div.style.width = '100%';
+                    tot_Div.style.marginTop = '-2%';
+
+
+                    //creating table
+                    var tot_table = document.createElement('table');
+                    tot_table.className = 'tot_table';
+                    tot_table.id = 'bodytable';
+                    tot_table.style.width = '94%';
+                    tot_table.style.marginLeft = '3%';
+                    tot_table.style.fontSize = '12';
+
+                    table_row_arrears = document.createElement('tr');
+
+                    var header_des = document.createElement('td');
+                    header_des.style.textAlign = 'right';
+                    header_des.style.width = '53%';
+                    header_des.colSpan = '3';
+                    header_des.innerHTML = "Arrears";
+                    table_row_arrears.appendChild(header_des);
+
+                    var header_amt = document.createElement('td');
+                    header_amt.style.fontWeight = 'bold';
+                    header_amt.style.textAlign = 'right';
+                    header_amt.style.width = '10%';
+                    header_amt.innerHTML = others.arrears;
+                    table_row_arrears.appendChild(header_amt);
+
+                    tot_table.appendChild(table_row_arrears);
+
+
+                    // if (others.total_outstand != '') {
+                        table_row_total = document.createElement('tr');
+                        table_row_total.style.height = '10';
+
+                        var header_des = document.createElement('td');
+                        header_des.style.textAlign = 'right';
+                        header_des.style.width = '53%';
+                        header_des.colSpan = '3';
+                        if(others.total_outstand < '0'){
+                            header_des.innerHTML = "<b>Total (A+B) : No Payment Reqired</b>";
+                        }else if(others.total_outstand > '0'){
+                            header_des.innerHTML = "<b>Total (A+B) : Receivable</b>";
+                        }else{
+                            header_des.innerHTML = "<b>Total (A+B) : Receivable</b>";
+                        }
+                        console.log(header_des.innerHTML)
+                        table_row_total.appendChild(header_des);
+
+                        var header_amt = document.createElement('td');
+                        header_amt.style.fontWeight = 'bold';
+                        header_amt.style.textAlign = 'right';
+                        header_amt.style.width = '10%';
+                        header_amt.innerHTML = '<b>' + others.total_outstand + '</b>';
+                        table_row_total.appendChild(header_amt);
+
+                        tot_table.appendChild(table_row_total);
+                    // }
+
+                    tot_Div.appendChild(tot_table);
+                    Top_elements.appendChild(tot_Div);
+                // }
+            }
+        }
+
+        // -----------------------------------------------total table--------------------------------------------------------------
+        function total() {
+
+            //sub div
+            var totaldiv = document.createElement('div');
+            totaldiv.id = 'tot_div';
+            totaldiv.className = 'tot_div';
+            if(config.display_arrears == false || config.display_arrears == null){
+            totaldiv.style.marginTop = '-2%';}
+
+            //creating table
+            var total_table_word = document.createElement('table');
+            total_table_word.className = 'total_table_word';
+            total_table_word.style.width = '100%';
+            total_table_word.style.border = '1';
+            total_table_word.style.fontSize = '12';
+
+            //creating table row
+            table_row_word = document.createElement('tr');
+
+            //creating table data
+            var table_data_word = document.createElement('td');
+            table_data_word.style.width = '100%';
+            if (others == undefined) {
+                others;
+            }
+            else {
+                table_data_word.innerHTML = 'Amount Chargeable (in words)<pre class="p"><I>E.&O.E</I><b><br></pre>' + others.amt_in_words + '</b>';
+            }
+            table_row_word.appendChild(table_data_word);
+
+            total_table_word.appendChild(table_row_word);
+            totaldiv.appendChild(total_table_word);
+
+            // totaldiv.appendChild(total_table_word);
+            Top_elements.appendChild(totaldiv);
+
+        }
+
+        // -----------------------------------------------hsn table--------------------------------------------------------------
+        function subtable() {
+
+         if(config.print_hsn_summary == true) {
+
+            //sub div
+            var hsndiv = document.createElement('div');
+            hsndiv.id = 'hsn_div';
+            hsndiv.className = 'hsndiv';
+
+            //creating footer table
+            var total_tablehsn = document.createElement('table');
+            total_tablehsn.className = 'total_tablehsn';
+            total_tablehsn.style.width = '100%';
+            // total_tablehsn.style.border = '1';  
+            total_tablehsn.style.fontSize = '12';
+
+
+            //creating table row
+            table_row_hsn = document.createElement('tr');
+
+            if (tax_details == undefined) {
+                tax_details;
+            }
+
+            if (tax_details.length != '') {
+
+                if (hsncolumns == undefined) {
+                    hsncolumns;
+                }
+
+                //creating footer table headers
+                var header_fhsn = document.createElement('th');
+                // header_fhsn.rowSpan = '1';
+                header_fhsn.style.width = '10%';
+                header_fhsn.innerHTML = hsncolumns[0].display_name;
+                table_row_hsn.appendChild(header_fhsn);
+
+                if (tax_details_total.total_taxable_value > 0) {
+                    var header_fvalue = document.createElement('th');
+                    header_fvalue.style.width = '1%';
+                    // header_fhsn.rowSpan = '1';
+                    header_fvalue.innerHTML = hsncolumns[1].display_name;
+                    table_row_hsn.appendChild(header_fvalue);
+                }
+                if (tax_details_total.total_central_tax_amount > 0) {
+                    var header_fctax = document.createElement('th');
+                    header_fctax.style.width = '0.1%';
+                    header_fctax.colSpan = '2';
+                    header_fctax.innerHTML = hsncolumns[2].display_name;
+
+
+                    var header_fcrate = document.createElement('th');
+                    header_fcrate.style.width = '1%';
+                    header_fcrate.style.borderBottomWidth = '0px';
+                    header_fcrate.style.borderLeftWidth = '0px';
+                    header_fcrate.innerHTML = hsncolumns[2].display_name_rate;
+                    header_fctax.appendChild(header_fcrate);
+
+                    var header_fcamt = document.createElement('th');
+                    header_fcamt.style.width = '1%';
+                    header_fcamt.style.borderBottomWidth = '0px';
+                    header_fcamt.style.borderRightWidth = '0px';
+                    header_fcamt.innerHTML = hsncolumns[2].display_name_amt;
+                    header_fctax.appendChild(header_fcamt);
+
+
+                    table_row_hsn.appendChild(header_fctax);
+                }
+                if (tax_details_total.total_state_tax_amount > 0) {
+                    var header_fstax = document.createElement('th');
+                    header_fstax.style.width = '0.1%';
+                    header_fstax.colSpan = '2';
+                    header_fstax.innerHTML = hsncolumns[3].display_name;
+
+                    var header_fsrate = document.createElement('th');
+                    header_fsrate.style.width = '1%';
+                    header_fsrate.style.borderBottomWidth = '0px';
+                    header_fsrate.style.borderLeftWidth = '0px';
+                    header_fsrate.innerHTML = hsncolumns[3].display_name_rate;
+                    header_fstax.appendChild(header_fsrate);
+
+                    var header_fsamt = document.createElement('th');
+                    header_fsamt.style.width = '1%';
+                    header_fsamt.style.borderBottomWidth = '0px';
+                    header_fsamt.style.borderRightWidth = '0px';
+                    header_fsamt.innerHTML = hsncolumns[3].display_name_amt;
+                    header_fstax.appendChild(header_fsamt);
+
+                    table_row_hsn.appendChild(header_fstax);
+                }
+                if (tax_details_total.total_integrated_tax_amount > 0) {
+                    var header_fitax = document.createElement('th');
+                    header_fitax.style.width = '0.1%';
+                    header_fitax.colSpan = '2';
+                    header_fitax.innerHTML = hsncolumns[4].display_name;
+
+                    var header_firate = document.createElement('th');
+                    header_firate.style.width = '1%';
+                    header_firate.style.borderBottomWidth = '0px';
+                    header_firate.style.borderLeftWidth = '0px';
+                    header_firate.innerHTML = hsncolumns[4].display_name_rate;
+                    header_fitax.appendChild(header_firate);
+
+                    var header_fiamt = document.createElement('th');
+                    header_fiamt.style.width = '1%';
+                    header_fiamt.style.borderBottomWidth = '0px';
+                    header_fiamt.style.borderRightWidth = '0px';
+                    header_fiamt.innerHTML = hsncolumns[4].display_name_amt;
+                    header_fitax.appendChild(header_fiamt);
+
+                    table_row_hsn.appendChild(header_fitax);
+                }
+                if (tax_details_total.total_cess_tax_amount > 0) {
+                    var header_fcesstax = document.createElement('th');
+                    header_fcesstax.style.width = '0.1%';
+                    header_fcesstax.colSpan = '2';
+                    header_fcesstax.innerHTML = hsncolumns[5].display_name;
+
+                    var header_fcessrate = document.createElement('th');
+                    header_fcessrate.style.width = '1%';
+                    header_fcessrate.style.borderBottomWidth = '0px';
+                    header_fcessrate.style.borderLeftWidth = '0px';
+                    header_fcessrate.innerHTML = hsncolumns[5].display_name_rate;
+                    header_fcesstax.appendChild(header_fcessrate);
+
+                    var header_fcessamt = document.createElement('th');
+                    header_fcessamt.style.width = '1%';
+                    header_fcessamt.style.borderBottomWidth = '0px';
+                    header_fcessamt.style.borderRightWidth = '0px';
+                    header_fcessamt.innerHTML = hsncolumns[5].display_name_amt;
+                    header_fcesstax.appendChild(header_fcessamt);
+
+                    table_row_hsn.appendChild(header_fcesstax);
+                }
+                var header_ftamt = document.createElement('th');
+                header_ftamt.style.width = '1%';
+                header_ftamt.innerHTML = hsncolumns[7].display_name;
+                table_row_hsn.appendChild(header_ftamt);
+
+
+                total_tablehsn.appendChild(table_row_hsn);
+                hsndiv.appendChild(total_tablehsn);
+                Top_elements.appendChild(hsndiv);
+            }
+
+
+
+            no_count = 0;
+            var table_row_hsn;
+            var table_row_fdata;
+            var loop_count1 = 0;
+            var first_page_item1 = 35;
+
+            if (count <= 15 && tax_details.length > 4) {
+                var first_page_item1 = 3;
+            }
+
+            var remaining_page_item1 = 35;
+            var page_item_check1;
+            var table_row_ftotal;
+            var looping = 0;  // variable for page count assigning of hsn
+
+
+
+            for (var q = 0; q < tax_details.length; q++) {
+
+                if (looping == 0) {
+                    page_item_check1 = first_page_item1;
+                }
+                else {
+                    page_item_check1 = remaining_page_item1;
+                }
+
+                if (no_count > page_item_check1) {
+
+                    var count_check1 = page_item_check1 + 1;
+
+                    if (no_count == count_check1) {
+                        total_tablehsn.appendChild(table_row_fdata);
+                        hsndiv.appendChild(total_tablehsn);
+                        Top_elements.appendChild(hsndiv);
+                    }
+                    if (count > 15) {
+                        page_count++;
+                    }
+                    looping++;
+                    foot();
+
+                    page.appendChild(Top_elements);
+                    document.body.appendChild(page);
+
+                    header();
+
+                    //sub div
+                    var hsndiv = document.createElement('div');
+                    hsndiv.id = 'tot_div';
+                    hsndiv.className = 'tot_div';
+
+                    //creating footer table
+                    var total_tablehsn = document.createElement('table');
+                    total_tablehsn.className = 'total_tablehsn';
+                    total_tablehsn.style.width = '100%';
+                    total_tablehsn.style.border = '1';
+                    total_tablehsn.style.fontSize = '12';
+
+
+                    //creating table row
+                    table_row_hsn = document.createElement('tr');
+
+                    if (tax_details.length != '') {
+
+                        //creating footer table headers
+                        var header_fhsn = document.createElement('th');
+                        // header_fhsn.rowSpan = '1';
+                        header_fhsn.style.width = '10%';
+                        header_fhsn.innerHTML = hsncolumns[0].display_name;
+                        table_row_hsn.appendChild(header_fhsn);
+
+                        if (tax_details_total.total_taxable_value > 0) {
+                            var header_fvalue = document.createElement('th');
+                            header_fvalue.style.width = '1%';
+                            // header_fhsn.rowSpan = '1';
+                            header_fvalue.innerHTML = hsncolumns[1].display_name;
+                            table_row_hsn.appendChild(header_fvalue);
+                        }
+                        if (tax_details_total.total_central_tax_amount > 0) {
+                            var header_fctax = document.createElement('th');
+                            header_fctax.style.width = '0.1%';
+                            header_fctax.colSpan = '2';
+                            header_fctax.innerHTML = hsncolumns[2].display_name;
+
+                            var header_fcrate = document.createElement('th');
+                            header_fcrate.style.width = '1%';
+                            header_fcrate.style.borderBottomWidth = '0px';
+                            header_fcrate.style.borderLeftWidth = '0px';
+                            header_fcrate.innerHTML = hsncolumns[2].display_name_rate;
+                            header_fctax.appendChild(header_fcrate);
+
+                            var header_fcamt = document.createElement('th');
+                            header_fcamt.style.width = '1%';
+                            header_fcamt.style.borderBottomWidth = '0px';
+                            header_fcamt.style.borderRightWidth = '0px';
+                            header_fcamt.innerHTML = hsncolumns[2].display_name_amt;
+                            header_fctax.appendChild(header_fcamt);
+
+
+                            table_row_hsn.appendChild(header_fctax);
+                        }
+                        if (tax_details_total.total_state_tax_amount > 0) {
+                            var header_fstax = document.createElement('th');
+                            header_fstax.style.width = '0.1%';
+                            header_fstax.colSpan = '2';
+                            header_fstax.innerHTML = hsncolumns[3].display_name;
+
+                            var header_fsrate = document.createElement('th');
+                            header_fsrate.style.width = '1%';
+                            header_fsrate.style.borderBottomWidth = '0px';
+                            header_fsrate.style.borderLeftWidth = '0px';
+                            header_fsrate.innerHTML = hsncolumns[3].display_name_rate;
+                            header_fstax.appendChild(header_fsrate);
+
+                            var header_fsamt = document.createElement('th');
+                            header_fsamt.style.width = '1%';
+                            header_fsamt.style.borderBottomWidth = '0px';
+                            header_fsamt.style.borderRightWidth = '0px';
+                            header_fsamt.innerHTML = hsncolumns[3].display_name_amt;
+                            header_fstax.appendChild(header_fsamt);
+
+                            table_row_hsn.appendChild(header_fstax);
+                        }
+                        if (tax_details_total.total_integrated_tax_amount > 0) {
+                            var header_fitax = document.createElement('th');
+                            header_fitax.style.width = '0.1%';
+                            header_fitax.colSpan = '2';
+                            header_fitax.innerHTML = hsncolumns[4].display_name;
+
+                            var header_firate = document.createElement('th');
+                            header_firate.style.width = '1%';
+                            header_firate.style.borderBottomWidth = '0px';
+                            header_firate.style.borderLeftWidth = '0px';
+                            header_firate.innerHTML = hsncolumns[4].display_name_rate;
+                            header_fitax.appendChild(header_firate);
+
+                            var header_fiamt = document.createElement('th');
+                            header_fiamt.style.width = '1%';
+                            header_fiamt.style.borderBottomWidth = '0px';
+                            header_fiamt.style.borderRightWidth = '0px';
+                            header_fiamt.innerHTML = hsncolumns[4].display_name_amt;
+                            header_fitax.appendChild(header_fiamt);
+
+                            table_row_hsn.appendChild(header_fitax);
+                        }
+                        if (tax_details_total.total_cess_tax_amount > 0) {
+                            var header_fcesstax = document.createElement('th');
+                            header_fcesstax.style.width = '0.1%';
+                            header_fcesstax.colSpan = '2';
+                            header_fcesstax.innerHTML = hsncolumns[5].display_name;
+
+                            var header_fcessrate = document.createElement('th');
+                            header_fcessrate.style.width = '1%';
+                            header_fcessrate.style.borderBottomWidth = '0px';
+                            header_fcessrate.style.borderLeftWidth = '0px';
+                            header_fcessrate.innerHTML = hsncolumns[5].display_name_rate;
+                            header_fcesstax.appendChild(header_fcessrate);
+
+                            var header_fcessamt = document.createElement('th');
+                            header_fcessamt.style.width = '1%';
+                            header_fcessamt.style.borderBottomWidth = '0px';
+                            header_fcessamt.style.borderRightWidth = '0px';
+                            header_fcessamt.innerHTML = hsncolumns[5].display_name_amt;
+                            header_fcesstax.appendChild(header_fcessamt);
+
+                            table_row_hsn.appendChild(header_fcesstax);
+                        }
+                        var header_ftamt = document.createElement('th');
+                        header_ftamt.style.width = '1%';
+                        header_ftamt.innerHTML = hsncolumns[7].display_name;
+                        table_row_hsn.appendChild(header_ftamt);
+
+                        // hsndiv.appendChild(total_table);
+                        // hsndiv.appendChild(total_table_word);
+                        total_tablehsn.appendChild(table_row_hsn);
+                        hsndiv.appendChild(total_tablehsn);
+                        Top_elements.appendChild(hsndiv);
+
+                        no_count = 0;
+                        q = q - 1;
+                    }
+                }
+                else {
+                    if (loop_count1 > 0) {
+                        total_tablehsn.appendChild(table_row_fdata);
+                    }
+                    //creating table row last
+                    var table_row_fdata = document.createElement('tr');
+                    table_row_fdata.className = 'table_row_fdata';
+
+                    var table_data_fhsn = document.createElement('td');
+                    table_data_fhsn.style.textAlign = 'left';
+                    table_data_fhsn.innerHTML = tax_details[q].hsn;
+                    table_row_fdata.appendChild(table_data_fhsn);
+
+                    if (tax_details_total.total_taxable_value > 0) {
+                        var table_data_fvalue = document.createElement('td');
+                        table_data_fvalue.style.textAlign = 'right';
+                        table_data_fvalue.innerHTML = tax_details[q].taxable_value;
+                        table_row_fdata.appendChild(table_data_fvalue);
+                    }
+                    if (tax_details_total.total_central_tax_amount > 0) {
+                        var table_data_fcrate = document.createElement('td');
+                        table_data_fcrate.style.textAlign = 'center';
+                        table_data_fcrate.innerHTML = tax_details[q].central_tax_rate;
+                        table_row_fdata.appendChild(table_data_fcrate);
+                    }
+                    if (tax_details_total.total_central_tax_amount > 0) {
+                        var table_data_fcamt = document.createElement('td');
+                        table_data_fcamt.style.textAlign = 'right';
+                        table_data_fcamt.innerHTML = tax_details[q].central_tax_amount;
+                        table_row_fdata.appendChild(table_data_fcamt);
+                    }
+                    if (tax_details_total.total_state_tax_amount > 0) {
+                        var table_data_fsrate = document.createElement('td');
+                        table_data_fsrate.style.textAlign = 'center';
+                        table_data_fsrate.innerHTML = tax_details[q].state_tax_rate;
+                        table_row_fdata.appendChild(table_data_fsrate);
+                    }
+                    if (tax_details_total.total_state_tax_amount > 0) {
+                        var table_data_fsamt = document.createElement('td');
+                        table_data_fsamt.style.textAlign = 'right';
+                        table_data_fsamt.innerHTML = tax_details[q].state_tax_amount;
+                        table_row_fdata.appendChild(table_data_fsamt);
+                    }
+                    if (tax_details_total.total_integrated_tax_amount > 0) {
+                        var table_data_firate = document.createElement('td');
+                        table_data_firate.style.textAlign = 'center';
+                        table_data_firate.innerHTML = tax_details[q].integrated_tax_rate;
+                        table_row_fdata.appendChild(table_data_firate);
+                    }
+                    if (tax_details_total.total_integrated_tax_amount > 0) {
+                        var table_data_fiamt = document.createElement('td');
+                        table_data_fiamt.style.textAlign = 'right';
+                        table_data_fiamt.innerHTML = tax_details[q].integrated_tax_amount;
+                        table_row_fdata.appendChild(table_data_fiamt);
+                    }
+                    if (tax_details_total.total_cess_tax_amount > 0) {
+                        var table_data_fcessrate = document.createElement('td');
+                        table_data_fcessrate.style.textAlign = 'right';
+                        table_data_fcessrate.innerHTML = tax_details[q].cess_tax_rate;
+                        table_row_fdata.appendChild(table_data_fcessrate);
+                    }
+                    if (tax_details_total.total_cess_tax_amount > 0) {
+                        var table_data_fcessamt = document.createElement('td');
+                        table_data_fcessamt.style.textAlign = 'right';
+                        table_data_fcessamt.innerHTML = tax_details[q].cess_tax_amount;
+                        table_row_fdata.appendChild(table_data_fcessamt);
+                    }
+
+                    var table_data_ftamt = document.createElement('td');
+                    table_data_ftamt.style.textAlign = 'right';
+                    table_data_ftamt.innerHTML = tax_details[q].total_tax_amount;
+                    table_row_fdata.appendChild(table_data_ftamt);
+
+                    total_tablehsn.appendChild(table_row_fdata);
+                    loop_count1++;
+                }
+                no_count++;
+            }
+            if (others.einvoice_details != '' && page_count == 0) {
+                if (tax_details.length > 4 || count > 10) {
+                    page_count++;
+                }
+            }
+            else {
+                if (tax_details.length > 4 || count > 15) {
+                    page_count++;
+                }
+            }
+
+            looping++;
+
+
+            if (tax_details != '') {
+                //creating table row last
+                table_row_ftotal = document.createElement('tr');
+                table_row_ftotal.className = 'table_row_ftotal';
+
+                var table_data_total = document.createElement('td');
+                table_data_total.style.textAlign = 'right';
+                table_data_total.innerHTML = '<b>' + tax_details_total.name + '</b>';
+                table_row_ftotal.appendChild(table_data_total);
+
+                var table_data_ttxvalue = document.createElement('td');
+                table_data_ttxvalue.style.textAlign = 'right';
+                table_data_ttxvalue.innerHTML = tax_details_total.total_taxable_value;
+                table_row_ftotal.appendChild(table_data_ttxvalue);
+
+                if (tax_details_total.total_central_tax_amount > 0) {
+                    var table_data_tcrate = document.createElement('td');
+                    table_data_tcrate.style.textAlign = 'center';
+                    table_data_tcrate.innerHTML = "";
+                    table_row_ftotal.appendChild(table_data_tcrate);
+                }
+                if (tax_details_total.total_central_tax_amount > 0) {
+                    var table_data_tcamt = document.createElement('td');
+                    table_data_tcamt.style.textAlign = 'right';
+                    table_data_tcamt.innerHTML = tax_details_total.total_central_tax_amount;
+                    table_row_ftotal.appendChild(table_data_tcamt);
+                }
+                if (tax_details_total.total_state_tax_amount > 0) {
+                    var table_data_tsrate = document.createElement('td');
+                    table_data_tsrate.style.textAlign = 'center';
+                    table_data_tsrate.innerHTML = "";
+                    table_row_ftotal.appendChild(table_data_tsrate);
+                }
+                if (tax_details_total.total_state_tax_amount > 0) {
+                    var table_data_tsamt = document.createElement('td');
+                    table_data_tsamt.style.textAlign = 'right';
+                    table_data_tsamt.innerHTML = tax_details_total.total_state_tax_amount;
+                    table_row_ftotal.appendChild(table_data_tsamt);
+                }
+                if (tax_details_total.total_integrated_tax_amount > 0) {
+                    var table_data_tirate = document.createElement('td');
+                    table_data_tirate.style.textAlign = 'center';
+                    table_data_tirate.innerHTML = "";
+                    table_row_ftotal.appendChild(table_data_tirate);
+                }
+                if (tax_details_total.total_integrated_tax_amount > 0) {
+                    var table_data_tiamt = document.createElement('td');
+                    table_data_tiamt.style.textAlign = 'right';
+                    table_data_tiamt.innerHTML = tax_details_total.total_integrated_tax_amount;
+                    table_row_ftotal.appendChild(table_data_tiamt);
+                }
+                if (tax_details_total.total_cess_tax_amount > 0) {
+                    var table_data_tcessrate = document.createElement('td');
+                    table_data_tcessrate.style.textAlign = 'right';
+                    table_data_tcessrate.innerHTML = "";
+                    table_row_ftotal.appendChild(table_data_tcessrate);
+                }
+                if (tax_details_total.total_cess_tax_amount > 0) {
+                    var table_data_tcessamt = document.createElement('td');
+                    table_data_tcessamt.style.textAlign = 'right';
+                    table_data_tcessamt.innerHTML = tax_details_total.total_cess_tax_amount;
+                    table_row_ftotal.appendChild(table_data_tcessamt);
+                }
+
+                var table_data_tamt = document.createElement('td');
+                table_data_tamt.style.textAlign = 'right';
+                table_data_tamt.innerHTML = tax_details_total.total_tax_amount;
+                table_row_ftotal.appendChild(table_data_tamt);
+
+
+                total_tablehsn.appendChild(table_row_ftotal);
+                hsndiv.appendChild(total_tablehsn);
+                Top_elements.appendChild(hsndiv);
+              }
+            }
+            // totaldiv.appendChild(total_table);
+            // totaldiv.appendChild(total_table_word);
+
+            page.appendChild(Top_elements);
+            document.body.appendChild(page);
+        }
+       
+        // --------------------------------------------------Footer-----------------------------------------------------------
+        function foot() {
+
+            //footer div
+            var footDiv = document.createElement('div');
+            footDiv.id = 'foot_div';
+            footDiv.className = 'footDiv';
+
+            //creating footer table
+            var total_tablefoot = document.createElement('table');
+            total_tablefoot.className = 'total_tablefoot';
+            total_tablefoot.style.width = '100%';
+            total_tablefoot.style.border = '1';
+            total_tablefoot.style.fontSize = '11';
+            total_tablefoot.style.height = '12%';
+
+            if (tax_details.length == '') {
+                total_tablefoot.style.height = '20%';
+            }
+
+            //table row
+            table_row_flast = document.createElement('tr');
+
+            //row data
+            var table_data_fdet = document.createElement('td');
+            table_data_fdet.style.width = '55%';
+            table_data_fdet.rowSpan = '3';
+            table_data_fdet.style.fontSize = '12';
+
+            if(tax_details.length != '' && config.print_hsn_summary == true){
+                if (others.tax_amt_in_words != '') {
+                    table_data_fdet.innerHTML = 'Tax Amount (in words):<b> ' + others.tax_amt_in_words + '<br><br>';
+                }
+            }
+
+            //creating table rowlast
+            table_row_flast1 = document.createElement('tr');
+
+            if (footer == undefined) {
+                footer;
+            }
+
+            for (r = 0; r < footer.length; r++) {
+                //creating table rowlast
+                table_row_flast3 = document.createElement('tr');
+                table_row_flast3.style.lineHeight = "50%";
+                table_row_flast3.className = 'table_row_flast3';
+
+                //creating table rowlast
+                table_row_flast2 = document.createElement('td');
+                table_row_flast2.style.width = '70%';
+
+                if(footer[r].value != '' && footer[r].value != null){
+                   table_row_flast2.innerHTML = '<br>' + footer[r].value;
+                }
+                table_row_flast3.appendChild(table_row_flast2);
+                table_row_flast1.appendChild(table_row_flast3);
+            }
+            table_data_fdet.appendChild(table_row_flast1);
+
+
+            //table row  for terms and condition
+            // table_row_detail = document.createElement ('tr');
+
+            // //terms and conditions label
+            // var label = document.createElement('label'); 
+            // if(others.terms_and_conditions != ''){
+            // label.innerHTML = '<b>Terms and Condition:</b><br>'+others.terms_and_conditions;
+            // }
+            // table_row_detail.appendChild(label);
+            // table_data_fdet.appendChild(table_row_detail);
+
+            //append table data to row
+            table_row_flast.appendChild(table_data_fdet);
+
+
+            // row data
+            var table_data_fdet3 = document.createElement('td');
+            table_data_fdet3.style.height = '90%';
+            table_data_fdet3.style.borderLeftStyle = 'hidden';
+            table_data_fdet3.style.width = '12%';
+
+            if (heading.name.substring(0, 3) != 'est' && heading.name.substring(0, 3) != 'EST' && heading.name.substring(0, 3) != 'Est') {
+
+                var qrc = document.createElement('div');
+                qrc.id = "qrcode";
+
+                table_data_fdet3.appendChild(qrc);
+
+                document.body.appendChild(table_data_fdet3);
+
+                var qrcode = new QRCode("qrcode", {
+                    text: others.upi_id,
+                    height: 70,
+                    width: 70,
+                });
+            }
+
+            // row data
+            var table_data_fdet4 = document.createElement('td');
+            table_data_fdet4.style.height = '100%';
+            table_data_fdet4.style.borderLeftStyle = 'hidden';
+            table_data_fdet4.innerHTML = others.bank_details;
+            table_data_fdet4.style.textAlign = 'left';
+
+            //appending to row
+            table_row_flast.appendChild(table_data_fdet4);
+            table_row_flast.appendChild(table_data_fdet3);
+
+
+            //appending to table
+            total_tablefoot.appendChild(table_row_flast);
+
+            //append 
+            footDiv.appendChild(total_tablefoot);
+
+
+            //new row
+            table_row_detail1 = document.createElement('tr');
+
+            if (config.authorised_signatory != true && config.authorised_signatory != false) {
+                config.authorised_signatory = true;
+            }
+
+            if (config.authorised_signatory == true) {
+
+                var table_data_fdet2 = document.createElement('td');
+                table_data_fdet2.style.textAlign = 'right';
+                table_data_fdet2.colSpan = '2';
+                table_data_fdet2.innerHTML = 'for<b> ' + be_details.beb_name.toUpperCase() + '</b><br><br><br>Authorised Signatory';
+                table_row_detail1.appendChild(table_data_fdet2);
+                total_tablefoot.appendChild(table_row_detail1);
+            }
+
+            Top_elements.appendChild(footDiv);
+
+            //footer div
+            var footsubDiv = document.createElement('div');
+            footsubDiv.id = 'foot_div';
+            footsubDiv.className = 'footDiv';
+            footsubDiv.style.marginTop = '3%'
+
+            //checking for estimate document
+            if (heading.name.substring(0, 3) != 'est' && heading.name.substring(0, 3) != 'EST' && heading.name.substring(0, 3) != 'Est') {
+
+                //footer header
+                var comp_generate_info = document.createElement('h4');
+                comp_generate_info.style.textAlign = 'center';
+                comp_generate_info.style.fontSize = '12';
+                comp_generate_info.style.fontWeight = 'normal';
+                comp_generate_info.style.marginTop = '-2%'
+                comp_generate_info.innerHTML = "This is Computer Generated Document";
+                footsubDiv.appendChild(comp_generate_info);
+
+            }
+
+            if (config.footer_date != true && config.footer_date != false) {
+                config.footer_date = true;
+            }
+
+            if (config.footer_date == true) {
+
+                //Footer Date&Time
+                if (inv_date == false) {
+                    var fdatetime = document.createElement('p');
+                    fdatetime.className = "footer1";
+                    fdatetime.id = "foot1";
+                    fdatetime.style.marginTop = '-4%'
+                    fdatetime.style.fontSize = '12';
+
+                    var today = new Date();
+                    var date = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
+                    var hours = today.getHours();
+                    var minutes = today.getMinutes();
+                    var seconds = today.getSeconds();
+                    var amOrPm = 'AM';
+                    if (hours > 12) {
+                        amOrPm = 'PM';
+                        hours = hours - 12;
+                    }
+                    if (minutes < 10) {
+                        minutes = "0" + minutes;
+                    }
+
+
+                    if (seconds < 10) {
+                        seconds = "0" + seconds;
+                    }
+
+                    var dateTime = date + ' ' + hours + ':' + minutes + ':' + seconds + ' ' + amOrPm;
+
+                    fdatetime.innerHTML = dateTime;
+                    footsubDiv.appendChild(fdatetime);
+
+                }
+
+                if (inv_date == true) {
+
+                    var finvdatetime = document.createElement('p');
+                    finvdatetime.id = 'lastModifyDate';
+                    finvdatetime.style.marginTop = '-4%'
+                    finvdatetime.style.fontSize = '12';
+
+                    var amOrPm = 'AM';
+                    if (hours > 12) {
+                        amOrPm = 'PM';
+                        hours = hours - 12;
+                    }
+                    if (minutes < 10) {
+                        minutes = "0" + minutes;
+                    }
+                    if (seconds < 10) {
+                        seconds = "0" + seconds;
+                    }
+                    var Time = document.lastModified;
+                    finvdatetime.innerHTML = Time + ' ' + amOrPm;
+
+                    footsubDiv.appendChild(finvdatetime);
+                }
+            }
+            //Footer pagecount
+            var fpagecount = document.createElement('p');
+            fpagecount.style.textAlign = 'right';
+            fpagecount.style.fontSize = '12';
+            fpagecount.style.marginTop = '-4%';
+            fpagecount.innerHTML = "Page No." + page_count;
+
+            footsubDiv.appendChild(fpagecount);
+
+            Top_elements.appendChild(footsubDiv);
+        }
+
+        //-----------------------------------------------------footer for hsn-------------------------------------
+        function foot_hsn() {
+            //footer div
+            var footDiv = document.createElement('div');
+            footDiv.id = 'foot_div';
+            footDiv.className = 'footDiv';
+
+            //creating footer table
+            var total_tablefoot = document.createElement('table');
+            total_tablefoot.className = 'total_tablefoot';
+            total_tablefoot.style.width = '100%';
+            total_tablefoot.style.border = '1';
+            total_tablefoot.style.fontSize = '11';
+            total_tablefoot.style.height = '11%';
+
+            if (tax_details.length == '') {
+                total_tablefoot.style.height = '20%';
+            }
+
+            //table row
+            table_row_flast = document.createElement('tr');
+
+            //row data
+            var table_data_fdet = document.createElement('td');
+            table_data_fdet.style.width = '55%';
+            table_data_fdet.rowSpan = '3';
+            table_data_fdet.style.fontSize = '12';
+
+            if (others.tax_amt_in_words != '') {
+                table_data_fdet.innerHTML = '';
+            }
+
+            //creating table rowlast
+            table_row_flast1 = document.createElement('tr');
+
+            for (r = 0; r < footer.length; r++) {
+                //creating table rowlast
+                table_row_flast3 = document.createElement('tr');
+                table_row_flast3.style.lineHeight = "50%";
+                table_row_flast3.className = 'table_row_flast3';
+
+                //creating table rowlast
+                table_row_flast2 = document.createElement('td');
+                table_row_flast2.style.width = '70%';
+
+                table_row_flast2.innerHTML = '';
+                table_row_flast3.appendChild(table_row_flast2);
+                table_row_flast1.appendChild(table_row_flast3);
+            }
+            table_data_fdet.appendChild(table_row_flast1);
+
+
+            //table row  for terms and condition
+            // table_row_detail = document.createElement ('tr');
+
+            // //terms and conditions label
+            // var label = document.createElement('label'); 
+            // if(others.terms_and_conditions != ''){
+            // label.innerHTML = '<b>Terms and Condition:</b><br>'+others.terms_and_conditions;
+            // }
+            // table_row_detail.appendChild(label);
+            // table_data_fdet.appendChild(table_row_detail);
+
+            //append table data to row
+            table_row_flast.appendChild(table_data_fdet);
+
+
+            // row data
+            var table_data_fdet3 = document.createElement('td');
+            table_data_fdet3.style.height = '90%';
+            table_data_fdet3.style.borderLeftStyle = 'hidden';
+            table_data_fdet3.style.width = '12%';
+
+            //   if(heading.name.substring(0,3) != 'est' && heading.name.substring(0,3) != 'EST' && heading.name.substring(0,3) != 'Est'){
+
+            //           var qrc = document.createElement('div');
+            //           qrc.id = "qrcode";
+
+            //           table_data_fdet3.appendChild(qrc);
+
+            //           document.body.appendChild(table_data_fdet3);
+
+            //           var qrcode = new QRCode("qrcode", {
+            //           text : others.upi_id,
+            //           height : 50,
+            //           width : 50,
+            //       });
+            //   }
+
+            // row data
+            var table_data_fdet4 = document.createElement('td');
+            table_data_fdet4.style.height = '100%';
+            table_data_fdet4.style.borderLeftStyle = 'hidden';
+            table_data_fdet4.innerHTML = '';
+            table_data_fdet4.style.textAlign = 'left';
+
+            //appending to row
+            table_row_flast.appendChild(table_data_fdet4);
+            table_row_flast.appendChild(table_data_fdet3);
+
+
+            //appending to table
+            total_tablefoot.appendChild(table_row_flast);
+
+            //append 
+            footDiv.appendChild(total_tablefoot);
+
+
+            //new row
+            table_row_detail1 = document.createElement('tr');
+
+            if (config.authorised_signatory != true && config.authorised_signatory != false) {
+                config.authorised_signatory = true;
+            }
+
+            if (config.authorised_signatory == true) {
+
+                var table_data_fdet2 = document.createElement('td');
+                table_data_fdet2.style.textAlign = 'right';
+                table_data_fdet2.colSpan = '2';
+                table_data_fdet2.innerHTML = 'for<b> ' + be_details.beb_name.toUpperCase() + '</b><br><br><br>Authorised Signatory';
+                table_row_detail1.appendChild(table_data_fdet2);
+                total_tablefoot.appendChild(table_row_detail1);
+            }
+
+            Top_elements.appendChild(footDiv);
+
+            //footer div
+            var footsubDiv = document.createElement('div');
+            footsubDiv.id = 'foot_div';
+            footsubDiv.className = 'footDiv';
+            footsubDiv.style.marginTop = '3%'
+
+            //checking for estimate document
+            if (heading.name.substring(0, 3) != 'est' && heading.name.substring(0, 3) != 'EST' && heading.name.substring(0, 3) != 'Est') {
+
+                //footer header
+                var comp_generate_info = document.createElement('h4');
+                comp_generate_info.style.textAlign = 'center';
+                comp_generate_info.style.fontSize = '12';
+                comp_generate_info.style.fontWeight = 'normal';
+                comp_generate_info.style.marginTop = '-2%'
+                comp_generate_info.innerHTML = "This is Computer Generated Document";
+                footsubDiv.appendChild(comp_generate_info);
+
+            }
+
+            if (config.footer_date != true && config.footer_date != false) {
+                config.footer_date = true;
+            }
+
+            if (config.footer_date == true) {
+
+                //Footer Date&Time
+                if (inv_date == false) {
+                    var fdatetime = document.createElement('p');
+                    fdatetime.className = "footer1";
+                    fdatetime.id = "foot1";
+                    fdatetime.style.marginTop = '-4%'
+                    fdatetime.style.fontSize = '12';
+
+                    var today = new Date();
+                    var date = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
+                    var hours = today.getHours();
+                    var minutes = today.getMinutes();
+                    var seconds = today.getSeconds();
+                    var amOrPm = 'AM';
+                    if (hours > 12) {
+                        amOrPm = 'PM';
+                        hours = hours - 12;
+                    }
+                    if (minutes < 10) {
+                        minutes = "0" + minutes;
+                    }
+                    if (seconds < 10) {
+                        seconds = "0" + seconds;
+                    }
+
+                    var dateTime = date + ' ' + hours + ':' + minutes + ':' + seconds + ' ' + amOrPm;
+
+                    fdatetime.innerHTML = dateTime;
+                    footsubDiv.appendChild(fdatetime);
+                }
+
+                if (inv_date == true) {
+
+                    var finvdatetime = document.createElement('p');
+                    finvdatetime.id = 'lastModifyDate';
+                    finvdatetime.style.marginTop = '-4%'
+                    finvdatetime.style.fontSize = '12';
+
+                    var amOrPm = 'AM';
+                    if (hours > 12) {
+                        amOrPm = 'PM';
+                        hours = hours - 12;
+                    }
+                    if (minutes < 10) {
+                        minutes = "0" + minutes;
+                    }
+                    if (seconds < 10) {
+                        seconds = "0" + seconds;
+                    }
+                    var Time = document.lastModified;
+                    finvdatetime.innerHTML = Time + ' ' + amOrPm;
+
+                    footsubDiv.appendChild(finvdatetime);
+                }
+            }
+
+            //Footer pagecount
+            var fpagecount = document.createElement('p');
+            fpagecount.style.textAlign = 'right';
+            fpagecount.style.fontSize = '12';
+            fpagecount.style.marginTop = '-4%';
+            fpagecount.innerHTML = "Page No." + page_count;
+
+            footsubDiv.appendChild(fpagecount);
+
+            Top_elements.appendChild(footsubDiv);
+        }
+
+    </script>
+
+    <script>
+        var inv_date = false;
+        header();
+        attribute();
+        //    mark();
+        // imagemark();
+        body();
+        tot_table();
+        total();
+        if (others.einvoice_details != '' && page_count == 0) {
+            if (count <= 10) {
+                subtable();
+            }
+        }
+        else {
+            if (count <= 15) {
+                subtable();
+            }
+        }
+
+        if (tax_details.length <= 4 || count > 10) {
+            foot();
+        }
+        else {
+            if (others.einvoice_details != '') {
+                if (count <= 10) {
+                    foot_hsn();
+                }
+            }
+            else {
+                if (count <= 15) {
+                    foot_hsn();
+                }
+            }
+        }
+    </script>
+
+    <script>
+        if (tax_details.length != '') {
+            if (others.einvoice_details != '' && page_count == 0) {
+                if (count > 10) {
+                    header();
+                    subtable();
+                    foot_hsn();
+                }
+            }
+            else {
+                if (count > 15) {
+                    header();
+                    subtable();
+                    foot_hsn();
+                }
+            }
+        }
+    </script>
+
+
+    </div>
+</body>
+
+</html>

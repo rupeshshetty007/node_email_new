@@ -1,0 +1,142 @@
+body {
+ background: white;
+}
+
+/* .page:before{
+ content: 'Original';
+ position: fixed;
+ top: 0;
+ bottom: 0;
+ left: 0;
+ right: 0;
+ z-index: -1;
+ 
+ font-size: 120px;
+ display: grid;
+ justify-content: center;
+ align-content: center;
+ opacity: 0.1;
+ transform: rotate(-30deg);
+} */
+
+.watermark {
+ opacity: 0.05;
+ position: absolute;
+ display: grid;
+ top: 0;
+ bottom: 0;
+ left: 0;
+ right: 0;
+ z-index: -1;
+
+ justify-content: center;
+ align-content: center;
+ font-size: 100px;
+ transform: rotate(-30deg);
+}
+
+.imgwatermark {
+ opacity: 0.05;
+ position: absolute;
+ display: grid;
+ top: 60%;
+ bottom: 0;
+ left: 50%;
+ right: 0;
+ z-index: -1;
+
+ justify-content: center;
+ align-content: center;
+ font-size: 100px;
+ /* transform: rotate(-30deg); */
+ transform: translate(-50%, -50%);
+}
+
+.page{
+ background:white;
+ position: relative;
+ width: 21cm;
+ height: 29cm; 
+ margin: 0 auto;
+ /* box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);  */
+ margin-bottom: 0.5cm;
+ display: block;
+}
+
+@media print {
+ body, .page {
+        height: auto;    
+        margin: 0;
+        /* box-shadow: initial;  */
+        background: initial; 
+       page-break-after: always;
+ }
+}
+
+.Top {
+ font-family: Arial, Helvetica, sans-serif;
+ /* font-size: 14; */
+ font-weight: normal;
+}
+
+.maindiv {
+ /* border: 1px solid; */
+ /* height: 32%; */
+ margin-left: 3%;
+ margin-right: 3%;
+ border-collapse: collapse;
+}
+.hsndiv {
+ margin-left: 3%;
+ margin-right: 3%;
+}
+
+table, td, th {
+   border: 1px solid;
+   border-collapse: collapse;
+   padding-top:0%;
+}
+
+.tableDiv {
+margin-left: 3%;
+ margin-right: 3%;
+}
+
+.table_data_desc, .irn_row, .ackno_row, .irntable, .table_row_bodydata, .body_table, .table_row_des, .table_row_igst, .table_row_flast3, .table_row_basictotal {
+ border-style : hidden!important;
+}
+
+#sub_div{
+ margin-left: 3%;
+ margin-right: 3%;
+ border-top-style: none;
+}
+
+.tot_div{
+margin-left: 3%;
+margin-right: 3%;
+}
+.footDiv {
+margin-left: 3%;
+margin-right: 3%;
+}
+
+.irndiv{
+ margin-left: 3%;
+ margin-right: 3%;
+}
+.continueDiv{
+ margin-left: 3%;
+ margin-right: 3%;
+}
+
+.tab {
+ margin-left: 0.5em;
+ font-family: Arial, Helvetica, sans-serif;
+}
+
+.p {
+ margin-top : -2%;
+ margin-bottom : 0em;
+ margin-left: 58em;
+}

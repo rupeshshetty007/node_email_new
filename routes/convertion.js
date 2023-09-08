@@ -3,7 +3,7 @@ const router = express.Router();
 const fs = require('fs');
 const axios = require('axios');
 const puppeteer = require('puppeteer');
-
+const nodemailer = require('nodemailer');
 
 // Not working
 // router.get('/api', async (req, res) => {
@@ -102,14 +102,46 @@ router.get('/api', async (req, res) => {
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'attachment; filename=page.pdf');
     res.send(pdf);
-
+    await sendEmailWithAttachment(pdf);
   } catch (error) {
 
     console.error(error);
     res.status(500).send('Internal Server Error');
-
   }
+
+  async function sendEmailWithAttachment(pdfBuffer) {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail', // e.g., 'gmail'
+      auth: {
+        user: 'jayashreehacharya97@gmail.com',
+        pass: 'hdmtubpenwecsoqo',
+      },
+    });
+
+    const mailOptions = {
+      from: 'jayashreehacharya97@gmail.com',
+      to: 'rupeshshetty243@gmail.com',
+      subject: 'Subject of the Email',
+      text: 'This is the plain text content of the email.',
+      attachments: [
+        {
+            filename: 'invoice.pdf',
+            content: pdfBuffer,
+        },
+    ],
+    };
+
+    // Send the email
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error);
+      } else {
+        console.log('Email sent:', info.response);
+      }
+    });
+    }
 });
+
 
 
 //  Working --------------------------------------------------------------------

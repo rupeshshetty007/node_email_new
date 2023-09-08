@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>EPrise</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js" integrity="sha512-g2TeAWw5GPnX7z0Kn8nFbYfeHcvAu/tx6d6mrLe/90mkCxO+RcptyYpksUz35EO337F83bZwcmUyHiHamspkfg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script type="text/javascript" src="qrcode.min.js"></script>
     <script type="text/javascript" src="qrious.js"></script>
 </head>
@@ -35,6 +36,7 @@
         var config = "";
 
         function topdiv() {
+            const Buffer = window.Buffer;
             page = document.createElement("page");
             page.className = 'page';
 
@@ -45,10 +47,11 @@
             let searchParams = new URLSearchParams(window.location.search)
             var message = searchParams.get('message')
             // Decode the String
+
             var decodedString = atob(message);
-
+            console.log("c",decodedString);
             const myArray = JSON.parse(decodedString);
-
+            console.log(myArray);
             product_columns = myArray.product_columns;
             hsncolumns = myArray.hsncolumns;
             heading = myArray.heading;
@@ -471,7 +474,7 @@
                     irndiv.appendChild(irntable);
 
 
-                    //e-invoice qrcode 
+                    //e-invoice qrcode
                     var einvoice_heading = document.createElement('h6');
                     einvoice_heading.innerHTML = "e-Invoice";
                     einvoice_heading.style.marginLeft = '82%';
@@ -502,7 +505,7 @@
             maintable.className = 'maintable';
             maintable.style.width = '100%';
             maintable.style.fontSize = '12';
-            // maintable.style.marginTop = '5%';  
+            // maintable.style.marginTop = '5%';
 
             //creating table row1
             table_row_main = document.createElement('tr');
@@ -529,7 +532,7 @@
                    if(be_details.beb_name == '' && be_details.beb_addline1 == '' && be_details.beb_addline2 == '' && be_details.beb_addline3 == '' && be_details.pin == '' && be_details.phone =='' && be_details.beb_gstin == ''){
                     table_row_main.appendChild(table_data_add);
                    }
-                   else{ 
+                   else{
                     var addressString = '<b>' + be_details.beb_name.toUpperCase() + '</b>';
 
                     if (be_details.beb_addline1 != '') {
@@ -626,7 +629,7 @@
             table_data_Ref.innerHTML = 'Reference No. & Date.<br><b>' + master_details.doc_reference + '</b>';
             table_row_main2.appendChild(table_data_Ref);
 
-            // var table_data_Oref= document.createElement ('td'); 
+            // var table_data_Oref= document.createElement ('td');
             // table_data_Oref.style.width='25%';
 
             // table_data_Oref.innerHTML="Other References<br><b>&nbsp</b>";
@@ -659,7 +662,7 @@
                    if(bill_to.party_name == '' && bill_to.party_add1 == '' && bill_to.party_add2 == '' && bill_to.party_add3 == '' && bill_to.party_pin == '' && bill_to.party_phone =='' && bill_to.party_gstin == ''){
                      table_row_main3.appendChild(table_data_addbuyer);
                    }
-                   else{ 
+                   else{
                     var addressString = 'Buyer (Bill to)<br><b>' + bill_to.party_name.toUpperCase() + '</b>';
 
                     if (bill_to.party_add1 != '') {
@@ -736,9 +739,9 @@
                    if(ship_to.name == '' && ship_to.add1 == '' && ship_to.add2 == '' && ship_to.add3 == '' && ship_to.pin == '' && ship_to.phone =='' && ship_to.gstin == ''){
                      table_row_main3.appendChild(table_data_addship);
                    }
-                   else{ 
+                   else{
                     var addressString = 'Consignee (Ship to)';
-                    
+
                     if (ship_to.name != '') {
                         addressString += '<br> <b>'+ ship_to.name.toUpperCase() + '</b>';
                     }
@@ -890,7 +893,7 @@
 
                     subDiv.appendChild(attrtable);
 
-                    //appending 
+                    //appending
                     Top_elements.appendChild(subDiv);
                     page.appendChild(Top_elements);
 
@@ -1097,7 +1100,7 @@
                     }
 
                     page_count++;
-                    //  foot(); 
+                    //  foot();
 
 
                     if (page_count > 1) {
@@ -1177,7 +1180,7 @@
 
 
                     // if(inv_att.length == ''){
-                    //   body_table.style.height = '45%'; 
+                    //   body_table.style.height = '45%';
                     //   tableDiv.style.borderTopWidth = '0px';
                     // }
 
@@ -1435,7 +1438,7 @@
                         }
                     }
 
-                
+
                     //new code
 
                     if (items[i].key != '' && items[i].key != null) {
@@ -1474,7 +1477,7 @@
                         }
                         body_table.appendChild(table_row_cgst);
                     }
-                    //new code ends 
+                    //new code ends
 
                     loop_count++;
                 }
@@ -1553,7 +1556,7 @@
                 body_table.appendChild(table_row_lineempty);
             }
 
-            //taxsplit table gst 
+            //taxsplit table gst
 
             for (var j = 0; j < tax_split_up_total.length; j++) {
 
@@ -1775,7 +1778,7 @@
             var total_tablehsn = document.createElement('table');
             total_tablehsn.className = 'total_tablehsn';
             total_tablehsn.style.width = '100%';
-            // total_tablehsn.style.border = '1';  
+            // total_tablehsn.style.border = '1';
             total_tablehsn.style.fontSize = '12';
 
 
@@ -2264,7 +2267,7 @@
             page.appendChild(Top_elements);
             document.body.appendChild(page);
         }
-       
+
         // --------------------------------------------------Footer-----------------------------------------------------------
         function foot() {
 
@@ -2330,7 +2333,7 @@
             // table_row_detail = document.createElement ('tr');
 
             // //terms and conditions label
-            // var label = document.createElement('label'); 
+            // var label = document.createElement('label');
             // if(others.terms_and_conditions != ''){
             // label.innerHTML = '<b>Terms and Condition:</b><br>'+others.terms_and_conditions;
             // }
@@ -2378,7 +2381,7 @@
             //appending to table
             total_tablefoot.appendChild(table_row_flast);
 
-            //append 
+            //append
             footDiv.appendChild(total_tablefoot);
 
 
@@ -2553,7 +2556,7 @@
             // table_row_detail = document.createElement ('tr');
 
             // //terms and conditions label
-            // var label = document.createElement('label'); 
+            // var label = document.createElement('label');
             // if(others.terms_and_conditions != ''){
             // label.innerHTML = '<b>Terms and Condition:</b><br>'+others.terms_and_conditions;
             // }
@@ -2601,7 +2604,7 @@
             //appending to table
             total_tablefoot.appendChild(table_row_flast);
 
-            //append 
+            //append
             footDiv.appendChild(total_tablefoot);
 
 

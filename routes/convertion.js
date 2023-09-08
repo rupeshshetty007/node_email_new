@@ -5,6 +5,7 @@ const axios = require('axios');
 const puppeteer = require('puppeteer');
 const nodemailer = require('nodemailer');
 const multer = require('multer');
+const zlib = require('zlib');
 
 // Not working
 // router.get('/api', async (req, res) => {
@@ -92,14 +93,26 @@ router.post('/api', upload.single('data'),  async (req, res) => {
 
     // Encode the string as base64
     const base64Data = Buffer.from(jsonString).toString('base64');
+    console.log("t",base64Data);
+   // const binaryData = Buffer.from(base64Data, 'base64');
+
+    // zlib.deflate(binaryData, async (err, compressedData) => {
+    //   if (err) {
+    //     console.error('Compression error:', err);
+    //     return;
+    //   }
+    //   const compressedBase64 = compressedData.toString('base64');
+    //   console.log('Compressed Base64:', compressedBase64);
+
 
     const url = 'http://localhost:3000?message=' + base64Data;
-    console.log('File Content:', url);
+
     // Launch a headless browser
     const browser = await puppeteer.launch();
 
-    // Open a new page
-    const page = await browser.newPage();
+       // Open a new page
+       const page = await browser.newPage();
+
 
     // Navigate to the URL
     await page.goto(url);
@@ -118,6 +131,7 @@ router.post('/api', upload.single('data'),  async (req, res) => {
     res.setHeader('Content-Disposition', 'attachment; filename=page.pdf');
     res.send(pdf);
     await sendEmailWithAttachment(pdf);
+  // });
   } catch (error) {
 
     console.error(error);

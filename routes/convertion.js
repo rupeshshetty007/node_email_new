@@ -4,6 +4,7 @@ const fs = require('fs');
 const axios = require('axios');
 const puppeteer = require('puppeteer');
 const nodemailer = require('nodemailer');
+const multer = require('multer');
 
 // Not working
 // router.get('/api', async (req, res) => {
@@ -64,13 +65,27 @@ const nodemailer = require('nodemailer');
 
 //  Working --------------------------------------------------------------------------------------------------
 
-router.get('/api', async (req, res) => {
-  try {
-    // Read the JSON file
-    const data = fs.readFileSync('public/json.txt', 'utf8');
+// router.get('/api', async (req, res) => {
+//   try {
+//     // Read the JSON file
+//     const data = fs.readFileSync('public/json.txt', 'utf8');
+  const storage = multer.memoryStorage(); // Store file data in memory
+  const upload = multer({ storage: storage });
+router.post('/api', upload.single('data'),  async (req, res) => {
+      try {
+
+        if (!req.file) {
+          res.status(400).send('No file uploaded');
+          return;
+        }
+        const fileContentBuffer = req.file.buffer;
+        const fileContent = fileContentBuffer.toString('utf8');
+
+
+    const body = fileContent
 
     // Parse the JSON data
-    const jsonData = JSON.parse(data);
+    const jsonData = JSON.parse(body);
 
     // Convert the JSON data to a string
     const jsonString = JSON.stringify(jsonData);
@@ -79,7 +94,7 @@ router.get('/api', async (req, res) => {
     const base64Data = Buffer.from(jsonString).toString('base64');
 
     const url = 'http://localhost:3000?message=' + base64Data;
-
+    console.log('File Content:', url);
     // Launch a headless browser
     const browser = await puppeteer.launch();
 

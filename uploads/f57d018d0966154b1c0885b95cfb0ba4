@@ -1,0 +1,280 @@
+{
+  "product_columns": [
+    {
+      "id": "1",
+      "display_name": "SL.No",
+      "name": "sl_no"
+    },
+    {
+      "id": "2",
+      "display_name": "Marks & Nos./Container No.",
+      "name": "marks_nos_container"
+    },
+    {
+      "id": "3",
+      "display_name": "No. & Kind of Pkgs.",
+      "name": "no_pkgs"
+    },
+    {
+      "id": "4",
+      "display_name": "Description of Goods/Services",
+      "name": "pro_name"
+    },
+    {
+      "id": "5",
+      "display_name": "HSN/SAC",
+      "name": "hsn"
+    },
+    {
+      "id": "13",
+      "display_name": "Tax%",
+      "name": "tax_rate"
+    },
+    {
+      "id": "7",
+      "display_name": "Qty",
+      "name": "qty"
+    },
+    {
+      "id": "6",
+      "display_name": "Unit",
+      "name": "unit"
+    },
+    {
+      "id": "8",
+      "display_name": "MRP",
+      "name": "mrp"
+    },
+    {
+      "id": "9",
+      "display_name": "Rate",
+      "name": "rate"
+    },
+    {
+      "id": "10",
+      "display_name": "Disc.%",
+      "name": "disc1_per"
+    },
+    {
+      "id": "11",
+      "display_name": "Disc.",
+      "name": "disc1_amt"
+    },
+    {
+      "id": "12",
+      "display_name": "Amount",
+      "name": "amount"
+    }
+  ],
+  "hsncolumns": [
+    {
+      "name": "hsn/sac",
+      "display_name": "HSN/SAC",
+      "display_name_rate": "",
+      "display_name_amt": "",
+      "visible": "1"
+    },
+    {
+      "name": "taxable_value",
+      "display_name": "Taxable Value",
+      "display_name_rate": "",
+      "display_name_amt": "",
+      "visible": "1"
+    },
+    {
+      "name": "output_cgst",
+      "display_name": "Central Tax",
+      "display_name_rate": "Rate",
+      "display_name_amt": "Amount",
+      "visible": "1"
+    },
+    {
+      "name": "output_sgst",
+      "display_name": "State Tax",
+      "display_name_rate": "Rate",
+      "display_name_amt": "Amount",
+      "visible": "1"
+    },
+    {
+      "name": "output_igst",
+      "display_name": "Integrated Tax Amount",
+      "display_name_rate": "Rate",
+      "display_name_amt": "Amount",
+      "visible": "0"
+    },
+    {
+      "name": "cess",
+      "display_name": "Cess",
+      "display_name_rate": "Rate",
+      "display_name_amt": "Amount",
+      "visible": "0"
+    },
+    {
+      "name": "round_off",
+      "display_name": "Round Off",
+      "visible": "1"
+    },
+    {
+      "name": "total_tax",
+      "display_name": "Total Tax Amount",
+      "visible": "1"
+    }
+  ],
+  "heading": {
+    "name": "Tax Invoice",
+    "doc_copy_type": "Original"
+  },
+  "be_details": {
+    "beb_name": "",
+    "beb_addline1": "Shop No.100,",
+    "beb_addline2": "Kodailbail",
+    "beb_addline3": "Mangaluru",
+    "pin": "575099",
+    "phone": "9999999999",
+    "beb_gstin": "29AAAAAAAAAAAAA"
+  },
+  "bill_to": {
+    "party_name": "Test Corp",
+    "party_add1": "22",
+    "party_add2": "Jeppu",
+    "party_add3": "Mangaluru",
+    "party_pin": "575099",
+    "party_phone": "999999999",
+    "party_gstin": "29AAAAAAAAAAAAA"
+  },
+  "ship_to": {
+    "name": "Test Corp",
+    "add1": "22",
+    "add2": "Jeppu",
+    "add3": "Mangaluru",
+    "pin": "575099",
+    "phone": "999999999",
+    "gstin": "29AAAAAAAAAAAAA"
+  },
+  "master_details": {
+    "inv_no": "20174",
+    "pmt_doc_date": "05-Apr-2022",
+    "place_supply": "Karnataka",
+    "paid_topay": "Credit",
+    "doc_reference": "",
+    "billed_by": "",
+    "due_by_date": ""
+  },
+  "attr_border": {
+    "enable": false
+  },
+  "inv_att": [
+  ],
+  "items": [
+    {
+      "sl_no": "1",
+      "marks_nos_container": "",
+      "no_pkgs": "",
+      "pro_name": "Item 1",
+      "hsn": "8010",
+      "qty": "2",
+      "unit": "Nos",
+      "mrp": "6,500.00",
+      "rate": "6,500.00",
+      "disc1_per": "",
+      "disc1_amt": "",
+      "amount": "13,000.00",
+      "desc": "Item 1 Desc",
+      "key": "",
+      "value": "",
+      "tax_rate": ""
+    }
+  ],
+  "others": {
+    "name": "Total",
+    "total_qty": "3",
+    "total_amount": "19,425.00",
+    "bank_details": "",
+    "terms_and_conditions": "",
+    "upi_id": "",
+    "arrears": "",
+    "total_outstand": "",
+    "amt_in_words": "INR Nineteen Thousand Four Hundred And Twenty Five Rupees Only",
+    "tax_amt_in_words": "INR Nine Hundred Twenty Five Only",
+    "einvoice_details": "",
+    "irn": "",
+    "ack_no": "",
+    "ack_date": "",
+    "page_size": ""
+  },
+  "config": {
+    "authorised_signatory": true,
+    "be_details": true,
+    "bill_to": true,
+    "ship_to": true,
+    "display_desc": "1",
+    "footer_date": true,
+    "rate_pre_tax":true,
+    "rate_pre_disc":true,
+    "display_arrears":false,
+    "tax_below_product": false
+  },
+  "tax_details": [
+    {
+      "hsn": "8210",
+      "taxable_value": "18500.00",
+      "central_tax_rate": "9%",
+      "state_tax_rate": "9%",
+      "integrated_tax_rate": "",
+      "cess_tax_rate": "",
+      "central_tax_amount": "462.50",
+      "state_tax_amount": "462.50",
+      "integrated_tax_amount": "",
+      "cess_tax_amount": "",
+      "total_tax_amount": "925.00"
+    },
+    {
+      "hsn": "8210",
+      "taxable_value": "18500.00",
+      "central_tax_rate": "9%",
+      "state_tax_rate": "9%",
+      "integrated_tax_rate": "",
+      "cess_tax_rate": "",
+      "central_tax_amount": "462.50",
+      "state_tax_amount": "462.50",
+      "integrated_tax_amount": "",
+      "cess_tax_amount": "",
+      "total_tax_amount": "925.00"
+    }
+  ],
+  "tax_details_total": {
+    "name": "Total",
+    "total_taxable_value": "18500.00",
+    "total_central_tax_amount": "462.50",
+    "total_state_tax_amount": "462.50",
+    "total_integrated_tax_amount": "",
+    "total_cess_tax_amount": "",
+    "total_tax_amount": "925.00"
+  },
+  "design": {
+    "logo":""
+  },
+  "tax_split_up_total": [
+    {
+      "name": "Output CGST",
+      "rate": "9%",
+      "amount": "462.50"
+    },
+    {
+      "name": "Output SGST",
+      "rate": "9%",
+      "amount": "462.50"
+    }
+  ],
+  "footer": [
+    {
+      "value": ""
+    },
+    {
+      "value": ""
+    },
+    {
+      "value": ""
+    }
+  ]
+}
